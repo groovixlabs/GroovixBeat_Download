@@ -1,6 +1,6 @@
 ﻿# GrooviXBeat — User Manual
 
-GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It combines the clip-launching workflow of Ableton Live with a built-in piano roll, waveform editor, VST3 support, and a live performance grid — all in a single self-contained application with no browser or web layer.
+GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It combines the clip-launching workflow with a built-in piano roll, waveform editor, VST3 support, and a live performance grid — all in a single self-contained application with no browser or web layer.
 
 ---
 
