@@ -139,33 +139,35 @@ Each step inside a pattern carries:
 
 ## Formula
 
-Enter notes and optional automation ramps as text using a compact bar/beat notation. Every line describes one note event; multiple lines build up a full phrase. This is the fastest way to enter specific melodies, chords, or note sequences without drawing them step by step.
+Enter notes and optional automation ramps as text using a compact bar/step notation. Every line describes one note event; multiple lines build up a full phrase. This is the fastest way to enter specific melodies, chords, or note sequences without drawing them step by step.
 
 ### Syntax
 
 ```
-Start.Beat-End.Beat=Note [param=value ...]
+Start.Step-End.Step=Note [param=value ...]
 ```
 
 | Part | Description |
 |---|---|
-| `Start.Beat` | Bar and beat where the note starts (both 1-based). |
-| `End.Beat` | Bar and beat where the note ends (exclusive — the note plays up to but not including this position). |
+| `Start.Step` | Bar and step where the note starts (both 1-based). |
+| `End.Step` | Bar and step where the note ends (exclusive — the note plays up to but not including this position). |
 | `Note` | A note name (`C4`, `Bb3`, `D#5`) or a plain MIDI number (`60`). Separate multiple notes with `+` for chords (`C4+E4+G4`). |
 | `[param=value]` | Optional space-separated parameters (see below). |
 
-### Bar.Beat notation
+### Bar.Step notation
 
-| Position | Steps from clip start |
-|---|---|
-| `1.1` | 0 |
-| `1.2` | 4 |
-| `1.3` | 8 |
-| `1.4` | 12 |
-| `2.1` | 16 |
-| `3.1` | 32 |
+Steps are **1–16** per bar (1 step = 1/16th note).
 
-1 step = 1/16th note; 4 steps = 1 beat; 16 steps = 1 bar.
+| Position | Meaning | Steps from clip start |
+|---|---|---|
+| `1.1` | Bar 1, step 1 (downbeat) | 0 |
+| `1.5` | Bar 1, step 5 (beat 2) | 4 |
+| `1.9` | Bar 1, step 9 (beat 3) | 8 |
+| `1.13` | Bar 1, step 13 (beat 4) | 12 |
+| `2.1` | Bar 2, step 1 | 16 |
+| `3.1` | Bar 3, step 1 | 32 |
+
+1 step = 1/16th note; 4 steps = 1 beat; 16 steps = 1 bar. Steps beyond 16 are invalid — use the next bar number.
 
 ### Note names
 
@@ -191,7 +193,7 @@ Accidentals: `#` for sharp, lowercase `b` for flat.
 **Flat value:** `param=50` — holds the value constant over the note's time range.  
 **Ramp:** `param=0>100` — linearly ramps from the start value to the end value.
 
-Automation segments cover exactly the same bar/beat range as the note on that line. They are written to the clip's automation lane and erase any existing breakpoints in that range for that parameter.
+Automation segments cover exactly the same bar/step range as the note on that line. They are written to the clip's automation lane and erase any existing breakpoints in that range for that parameter.
 
 ### Comments
 

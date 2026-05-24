@@ -21,44 +21,88 @@ Notes and automation are appended to the clip (they do not erase existing conten
 Each line describes one note event (or chord) and optional automation ramps.
 
 ```
-Start.Beat-End.Beat=Note [param=value ...]
+Start.Step-End.Step=Note [param=value ...]
 ```
 
 | Part | Description |
 |---|---|
-| `Start.Beat` | Start position — bar number, dot, beat number |
-| `End.Beat` | End position — the note plays until this position |
+| `Start.Step` | Start position — bar number, dot, step number (1–16) |
+| `End.Step` | End position — the note plays until this position |
 | `Note` | MIDI note name or number; use `+` to stack a chord |
 | `[param=value]` | Optional automation parameters (space-separated) |
 
 ---
 
-## Bar.Beat Notation
+## Bar.Step Notation
 
-Positions are written as **Bar.Beat**, where both bar and beat are **1-based**.
+Positions are written as **Bar.Step**, where bar and step are both **1-based**.
 
-| You write | Meaning | Step number |
+- **Bar** — bar number (1, 2, 3, …)
+- **Step** — 1/16th note position within the bar (1–16)
+
+| You write | Meaning | Absolute step |
 |---|---|---|
-| `1.1` | Bar 1, Beat 1 | Step 0 |
-| `1.2` | Bar 1, Beat 2 | Step 4 |
-| `1.3` | Bar 1, Beat 3 | Step 8 |
-| `1.4` | Bar 1, Beat 4 | Step 12 |
-| `2.1` | Bar 2, Beat 1 | Step 16 |
-| `3.1` | Bar 3, Beat 1 | Step 32 |
+| `1.1` | Bar 1, Step 1 (downbeat) | 0 |
+| `1.2` | Bar 1, Step 2 | 1 |
+| `1.3` | Bar 1, Step 3 | 2 |
+| `1.5` | Bar 1, Step 5 (beat 2) | 4 |
+| `1.9` | Bar 1, Step 9 (beat 3) | 8 |
+| `1.13` | Bar 1, Step 13 (beat 4) | 12 |
+| `2.1` | Bar 2, Step 1 (downbeat) | 16 |
+| `3.1` | Bar 3, Step 1 | 32 |
 
 **Time units:**
 - 1 step = 1/16th note
-- 4 steps = 1 beat
+- 4 steps = 1 beat (quarter note)
 - 16 steps = 1 bar
 
-**Example — a note filling bar 1:**
+**Step range:** steps are **1–16** per bar. `1.17` is invalid — use `2.1` instead.
+
+**Beat landmarks** (useful reference for 4/4 time):
+
+| Beat | Step notation |
+|---|---|
+| Beat 1 | `B.1` |
+| Beat 2 | `B.5` |
+| Beat 3 | `B.9` |
+| Beat 4 | `B.13` |
+
+**Note duration reference:**
+
+| Duration | Steps | How to write | Example |
+|---|---|---|---|
+| 1/16 note | 1 | `B.N - B.(N+1)` | `1.1-1.2=C4` |
+| 1/8 note | 2 | `B.N - B.(N+2)` | `1.1-1.3=C4` |
+| Dotted 1/8 | 3 | `B.N - B.(N+3)` | `1.1-1.4=C4` |
+| 1/4 note | 4 | `B.N - B.(N+4)` | `1.1-1.5=C4` |
+| Dotted 1/4 | 6 | `B.N - B.(N+6)` | `1.1-1.7=C4` |
+| 1/2 note | 8 | `B.N - B.(N+8)` | `1.1-1.9=C4` |
+| Dotted 1/2 | 12 | `B.N - B.(N+12)` | `1.1-1.13=C4` |
+| Whole note (1 bar) | 16 | `B.1 - (B+1).1` | `1.1-2.1=C4` |
+| 2 bars | 32 | `B.1 - (B+2).1` | `1.1-3.1=C4` |
+| 4 bars | 64 | `B.1 - (B+4).1` | `1.1-5.1=C4` |
+
+**Example — a whole note filling bar 1:**
 ```
 1.1-2.1=C3
 ```
 
-**Example — a note on the second beat of bar 2, lasting one beat:**
+**Example — a quarter note starting on beat 2 of bar 2:**
 ```
-2.2-2.3=G4
+2.5-2.9=G4
+```
+
+**Example — an 8th note on beat 3 of bar 1:**
+```
+1.9-1.11=E4
+```
+
+**Example — a 16th note run across one beat:**
+```
+1.1-1.2=C4
+1.2-1.3=D4
+1.3-1.4=E4
+1.4-1.5=F4
 ```
 
 ---
@@ -97,6 +141,19 @@ You can also write a plain integer (0–127) instead of a note name.
 ```
 1.1-2.1=60
 ```
+
+**Valid MIDI range:** 0 (`C-1`) to 127 (`G9`). Practical music sits in roughly 24 (`C1`) to 108 (`C8`). Notes outside 0–127 are rejected.
+
+**Octave reference:**
+
+| Note | MIDI |
+|---|---|
+| C1 | 24 |
+| C2 | 36 |
+| C3 | 48 |
+| C4 (middle C) | 60 |
+| C5 | 72 |
+| C6 | 84 |
 
 ---
 
@@ -169,12 +226,12 @@ param=FROM>TO
 
 ### Recognised Parameters
 
-| You write | Automation lane |
-|---|---|
-| `vol` or `volume` | Volume |
-| `pan` | Pan |
-| `pitch` or `pitchbend` | Pitch Bend |
-| `mod` or `modulation` | Modulation |
+| You write | Automation lane | Value meaning |
+|---|---|---|
+| `vol` or `volume` | Volume | 0 = silence, 100 = full volume |
+| `pan` | Pan | 0 = hard left, 50 = centre, 100 = hard right |
+| `pitch` or `pitchbend` | Pitch Bend | 0 = max bend down, 50 = no bend (centre), 100 = max bend up |
+| `mod` or `modulation` | Modulation (CC1) | 0 = none, 100 = maximum modulation |
 
 ---
 
@@ -217,8 +274,8 @@ If a line contains a mistake, a red error message appears below the text box and
 
 | Error message | Likely cause |
 |---|---|
-| `expected Start.Beat-End.Beat=Note format` | Missing `-` or `=`, or they appear in the wrong order |
-| `end position must be after start` | The end Bar.Beat is earlier than or equal to the start |
+| `expected Start.Step-End.Step=Note format` | Missing `-` or `=`, or they appear in the wrong order |
+| `end position must be after start` | The end Bar.Step is earlier than or equal to the start |
 | `missing note` | Nothing written after the `=` |
 | `note must come before parameters` | A `param=value` token appeared before the note name |
 | `unrecognized note 'X'` | The note name is malformed (check letter, accidental, octave) |
@@ -231,9 +288,9 @@ If a line contains a mistake, a red error message appears below the text box and
 Each line is processed independently. Use multiple lines to build a full sequence.
 
 ```
-1.1-2.1=C4 vel=90
-1.2-2.2=E4 vel=85
-1.3-2.3=G4 vel=80
+1.1-2.1=C4 vel=90          # whole note on beat 1
+1.5-2.5=E4 vel=85          # whole note offset by 1 beat (creates overlap/layer)
+1.9-2.9=G4 vel=80          # whole note offset by 2 beats
 2.1-3.1=F3+A3+C4 vel=95 mod=20>60
 3.1-4.1=G3+B3+D4 vel=100
 4.1-5.1=C3+E3+G3 vel=90 mod=60>0
@@ -245,17 +302,42 @@ Formulas are **appended** to the clip — clicking Insert does not erase existin
 
 ## Complete Examples
 
-### Example 1 — C major scale, one note per beat
+### Example 1 — C major scale
 
+**Quarter notes (one note per beat, 2 bars):**
+```
+1.1-1.5=C4
+1.5-1.9=D4
+1.9-1.13=E4
+1.13-2.1=F4
+2.1-2.5=G4
+2.5-2.9=A4
+2.9-2.13=B4
+2.13-3.1=C5
+```
+
+**Eighth notes (scale in one bar):**
+```
+1.1-1.3=C4
+1.3-1.5=D4
+1.5-1.7=E4
+1.7-1.9=F4
+1.9-1.11=G4
+1.11-1.13=A4
+1.13-1.15=B4
+1.15-2.1=C5
+```
+
+**16th notes (scale in half a bar):**
 ```
 1.1-1.2=C4
 1.2-1.3=D4
 1.3-1.4=E4
-1.4-2.1=F4
-2.1-2.2=G4
-2.2-2.3=A4
-2.3-2.4=B4
-2.4-3.1=C5
+1.4-1.5=F4
+1.5-1.6=G4
+1.6-1.7=A4
+1.7-1.8=B4
+1.8-1.9=C5
 ```
 
 ---
@@ -313,11 +395,86 @@ Formulas are **appended** to the clip — clicking Insert does not erase existin
 
 ---
 
+## Invalid Syntax — What to Avoid
+
+These are common mistakes that will produce an error and prevent insertion:
+
+| What you wrote | Problem | Correct form |
+|---|---|---|
+| `1.1-1.1=C4` | Zero duration — start equals end | `1.1-1.2=C4` |
+| `2.1-1.13=C4` | End is before start | `1.13-2.1=C4` |
+| `1.17-2.1=C4` | Step 17 does not exist; steps are 1–16 | `2.1-3.1=C4` |
+| `1.1-2.1=C 4` | Space inside a note name | `1.1-2.1=C4` |
+| `1.1-2.1=C4 + E4` | Spaces around `+` in chord | `1.1-2.1=C4+E4` |
+| `1.1-2.1=CB4` | Uppercase B used as flat | `1.1-2.1=Cb4` |
+| `1.1-2.1=vel=80` | Parameter before note | `1.1-2.1=C4 vel=80` |
+| `1.1-2.1=C4 filter=50` | Unknown parameter name | `1.1-2.1=C4 mod=50` |
+| `1.1-2.1=C4+E4 vel=80 100` | Value without a `param=` key | `1.1-2.1=C4+E4 vel=80 vol=100` |
+
+---
+
+## LLM Prompt Rules
+
+The following compact rule set is designed to be included in an LLM system prompt so the model can generate valid Note Formula text.
+
+```
+NOTE FORMULA RULES — GrooviXBeat
+
+Format (one line per note):
+  Start.Step-End.Step=Note [param=value ...]
+
+Positions (Bar.Step):
+- Both bar and step are integers, 1-based.
+- Steps are 1–16 per bar (1 step = 1/16th note). Step 17+ is invalid — use next bar.
+- Absolute offset = (bar-1)*16 + (step-1).
+- Beat landmarks: beat 1 = B.1, beat 2 = B.5, beat 3 = B.9, beat 4 = B.13.
+- Minimum duration is 1 step (1/16th note).
+- End must be strictly after start. Same position = error.
+
+Duration quick-ref (N = step number):
+  1/16  = 1 step   → B.N - B.(N+1)   e.g. 1.1-1.2
+  1/8   = 2 steps  → B.N - B.(N+2)   e.g. 1.1-1.3
+  1/4   = 4 steps  → B.N - B.(N+4)   e.g. 1.1-1.5
+  1/2   = 8 steps  → B.N - B.(N+8)   e.g. 1.1-1.9
+  whole = 16 steps → B.1 - (B+1).1   e.g. 1.1-2.1
+
+Note names:
+- Letter A-G (case-insensitive) + optional accidental + octave integer.
+- Sharp: # (e.g. D#4). Flat: lowercase b only (e.g. Bb3, Eb4).
+- Uppercase B is always the note B, never a flat.
+- C4 = MIDI 60 (middle C). C3=48, C5=72.
+- Or use plain MIDI number 0-127.
+- Valid practical range: C1 (24) to C7 (84).
+
+Chords:
+- Join notes with + and NO spaces: C4+E4+G4
+
+Parameters (all optional, space-separated after the note):
+- vel=0-127          note velocity, default 100
+- vol=0-100          volume (flat) or vol=FROM>TO (ramp)
+- pan=0-100          pan; 50=centre, 0=left, 100=right
+- pitch=0-100        pitch bend; 50=centre (no bend), 0=max down, 100=max up
+- mod=0-100          modulation; 0=none, 100=maximum
+
+Ramps: param=FROM>TO interpolates linearly over the note's time range.
+Comments: # to end of line. Blank lines ignored.
+
+NEVER:
+- Use step > 16 (e.g. 1.17 is invalid — write 2.1 instead).
+- Write zero-duration notes (start == end).
+- Put end before start.
+- Put spaces inside note names or around + in chords.
+- Use uppercase B as a flat symbol.
+- Use param names other than vel, vol, pan, pitch/pitchbend, mod/modulation.
+```
+
+---
+
 ## Quick Reference
 
 ```
-# Basic note (bar.beat notation)
-1.1-2.1=C4                    C4, bars 1-2
+# Basic note (bar.step notation; step = 1/16th note, 16 steps per bar)
+1.1-2.1=C4                    C4, whole note bar 1
 
 # Note with velocity
 1.1-2.1=C4 vel=80
@@ -351,8 +508,8 @@ Formulas are **appended** to the clip — clicking Insert does not erase existin
 
 ## Notes and Limitations
 
-- **Bar and beat numbers are 1-based.** Bar 1 Beat 1 is the very first step of the clip.
-- **The note duration equals** `End.Beat − Start.Beat` in steps. A duration of zero is not allowed.
+- **Bar and step numbers are 1-based.** Bar 1 Step 1 is the very first 1/16th note of the clip. Steps run from 1 to 16 per bar; step 17+ is invalid.
+- **The note duration equals** `End − Start` in absolute steps. A duration of zero is not allowed.
 - **Automation values are 0–100%** and are clamped to that range. Values outside it are treated as 0 or 100.
 - **Inserting automation replaces** any existing breakpoints in the note's step range for that parameter. Breakpoints outside the range are untouched.
 - **Inserting notes is always additive.** Existing notes are never removed; Insert appends to whatever is already in the clip.

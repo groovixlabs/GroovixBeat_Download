@@ -548,20 +548,23 @@ The pattern description is shown below the style list. Click **Insert into Clip*
 
 ### 7d. Formula Tab
 
-Enter notes and automation directly as text using a compact bar/beat notation. This is the fastest way to enter specific melodies, chord voicings, or note sequences from scratch.
+Enter notes and automation directly as text using a compact bar/step notation. Positions are written as `Bar.Step` where step is a 1/16th note number (1–16). This is the fastest way to enter specific melodies, chord voicings, or note sequences from scratch.
 
 ```
-Start.Beat-End.Beat=Note [param=value ...]
+Start.Step-End.Step=Note [param=value ...]
 ```
 
 **Examples:**
 ```
-1.1-2.1=C4 vel=90
+1.1-2.1=C4 vel=90          # whole note, bar 1
+1.1-1.5=C4                 # quarter note (steps 1-4)
+1.5-1.9=E4                 # quarter note on beat 2
 2.1-3.1=E4+G4 vel=85
 3.1-5.1=F3+A3+C4 vel=95 mod=0>80
 4.1-5.1=G3 vel=100 pitch=50>52
 ```
 
+- **Positions**: `Bar.Step` — step 1–16 per bar, where step 5 = beat 2, step 9 = beat 3, step 13 = beat 4
 - **Notes**: letter names (`C4`, `Bb3`, `D#5`) or plain MIDI numbers (`60`)
 - **Chords**: stack notes with `+` (`C4+E4+G4`)
 - **Velocity**: `vel=0–127`
@@ -570,7 +573,7 @@ Start.Beat-End.Beat=Note [param=value ...]
 
 If a line contains an error, a red message appears below the text box and nothing is inserted until all lines are valid.
 
-> See **[docs/NoteFormula.md](NoteFormula.md)** for the full syntax reference including bar/beat notation, all parameter names, chord syntax, and complete examples.
+> See **[docs/NoteFormula.md](NoteFormula.md)** for the full syntax reference including bar/step notation, all parameter names, chord syntax, and complete examples.
 
 ---
 
