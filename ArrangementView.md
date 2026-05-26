@@ -11,6 +11,8 @@ Switch between modes using the **PERF | ARR** toggle at the left of the toolbar.
 
 ## Layout Overview
 
+![A mushroom-head robot drinking bubble tea](GroovixBeat_01.png)
+
 ```
 +--------------------------------------------------------------+
 | Toolbar  [mode][AUTO][Play][Stop][Click][BPM][Q][AutoQ]...  |
