@@ -8,11 +8,13 @@ The **Clip Editor** is a full-overlay piano roll that opens when you double-clic
 
 - **Open**: Double-click any clip cell in the Live Performance grid.
 - **Close**: Click the **X** button at the far right of the toolbar, or click the close button in the Live Performance toolbar while the editor is showing.
-- Changes are applied immediately and stored in `NativeAppState`. They are written to the project file on the next save.
+- Changes are applied immediately and written to the project file on the next save.
 
 ---
 
 ## Layout
+
+![Clip Editor](GroovixBeat_08.png)
 
 ```
 +-------------------------------------------------------------------+
@@ -22,7 +24,7 @@ The **Clip Editor** is a full-overlay piano roll that opens when you double-clic
 +----------+--------------------------------------------------------+
 |  Piano   |  Note grid (scroll, zoom, draw, move, resize)         | V
 |  keys    |                                                        | S
-|  (52 px) |                                                        | B
+|          |                                                        | B
 +----------+--------------------------------------------------------+
 | H Scrollbar                                                       |
 +-----+--------- Resizable divider (drag) --------------------------+
@@ -34,16 +36,16 @@ The **Clip Editor** is a full-overlay piano roll that opens when you double-clic
 +-------------------------------------------------------------------+
 ```
 
-| Zone | Height | Purpose |
-|---|---|---|
-| Toolbar | 36 px | All edit buttons, playback controls, clip settings |
-| Ruler | 18 px | Bar/beat time axis; click or drag to set seek position |
-| Piano keys | 52 px wide | Pitch labels (or drum pad names); drag target for samples |
-| Note grid | remaining | Note drawing, moving, resizing; rubber-band selection |
-| H Scrollbar | 12 px | Horizontal pan |
-| Automation divider | 6 px | Drag to resize the automation lane |
-| Automation lane | resizable 50-500 px | Per-parameter breakpoint curves |
-| Info bar | 18 px | Track name left (gold bold), hover hint right (gold) |
+| Zone | Purpose |
+|---|---|
+| Toolbar | All edit buttons, playback controls, clip settings |
+| Ruler | Bar/beat time axis; click or drag to set seek position |
+| Piano keys | Pitch labels (or drum pad names) |
+| Note grid | Note drawing, moving, resizing; rubber-band selection |
+| H Scrollbar | Horizontal pan |
+| Automation divider | Drag to resize the automation lane |
+| Automation lane | Per-parameter breakpoint curves |
+| Info bar | Track name left (gold bold), hover hint right (gold) |
 
 ---
 
@@ -61,7 +63,7 @@ Opens a file browser to import notes from a `.mid` or `.midi` file. MIDI timesta
 
 ### Automation (Toggle)
 
-Toggles the **Automation Lane** panel at the bottom of the editor. When active (gold background), the lane is visible and automation buttons become available in the parameter panel on the left. VST plugin parameters are loaded lazily the first time this is turned on.
+Toggles the **Automation Lane** panel at the bottom of the editor. When active (gold background), the lane is visible and automation buttons become available in the parameter panel on the left.
 
 ---
 
@@ -102,13 +104,13 @@ Copies the selected notes and pastes them after the last note in the clip, exten
 
 ### Generate
 
-Opens the **Note Generator** dialog where you can create melody, chord, or arpeggio patterns algorithmically. Accepted patterns are added to the current clip and can include automation segments. Hidden in **Drum Kit** mode.
+Opens the **Note Generator** dialog where you can create melody, chord, or arpeggio patterns. Accepted patterns are added to the current clip and can include automation segments. Hidden in **Drum Kit** mode.
 
 ---
 
 ### VST UI
 
-Opens the plugin editor window for the current track's VST instrument. This button is enabled only for **melody** tracks that have a loaded plugin. It is automatically grayed out when no plugin is available.
+Opens the plugin editor window for the current track's VST instrument. This button is enabled only for **melody** tracks that have a loaded plugin.
 
 ---
 
@@ -143,7 +145,7 @@ Closes the Clip Editor overlay and returns to the Live Performance grid.
 Visible only for **Sampled Instrument** tracks. The combo selects the sample preset for the track. The status label shows the current load state:
 
 - **Loading...** (animated, with a timer icon) -- preset is being loaded.
-- **Ready** (green checkmark) -- preset loaded successfully, shown for ~3 seconds then hidden.
+- **Ready** (green checkmark) -- preset loaded successfully, shown for a few seconds then hidden.
 
 ---
 
@@ -193,7 +195,7 @@ Audio to the right of the clip boundary is dimmed in the grid. The scrollbar ran
 
 ## Piano Key Panel
 
-The 52 px wide panel on the left side of the editor.
+The panel on the left side of the editor.
 
 ### Melody / Sampler mode
 
@@ -212,7 +214,7 @@ Each row displays a **GM drum pad** from MIDI pitch 35 (Kick 2) to 81 (Open Tria
 - Pitch number (small, dim, left).
 - GM instrument name (right of pitch number).
 - Gold accent bar on the left edge if a sample file is assigned.
-- Warm dark background (`#2a2010`) if a sample is assigned.
+- Warm dark background if a sample is assigned.
 - Gold highlight border when an audio file is dragged over the row.
 
 **Assigning samples in Drum Kit mode:**
@@ -230,14 +232,14 @@ Each row displays a **GM drum pad** from MIDI pitch 35 (Kick 2) to 81 (Open Tria
 The ruler strip (below the toolbar) shows bar numbers and beat marks.
 
 - **Bar lines** (bright) -- numbered.
-- **Beat marks** (dimmer) -- shown only when the zoom level is wide enough.
+- **Beat marks** (dimmer) -- shown when zoomed in far enough.
 - Click or drag in the ruler to set the **seek position** (gold triangle marker). The seek position is where playback starts when you press Space.
 
 ---
 
 ## Note Grid
 
-The main editing area. Notes are drawn as blue rectangles one row tall (16 px per semitone or drum pad row). A thin resize handle stripe is visible at the right edge of notes that are wide enough.
+The main editing area. Notes are drawn as blue rectangles. A thin resize handle stripe is visible at the right edge of notes that are wide enough.
 
 ### Visual indicators
 
@@ -266,7 +268,7 @@ When the **SEL** button in the Live Performance toolbar is **off**:
 
 - **Left-click empty space**: places a note at that pitch/step. Hold and drag right to set the note's duration. Release to commit.
 - **Left-click existing note body**: starts **moving** the note. Drag horizontally to change start step; drag vertically to change pitch.
-- **Left-click the right edge** of a note (resize handle, last 8 px): starts **resizing** the note. Drag right to lengthen, left to shorten.
+- **Left-click the right edge** of a note (resize handle): starts **resizing** the note. Drag right to lengthen, left to shorten.
 - **Right-click**: deletes the note under the cursor immediately.
 - The cursor changes to a crosshair over empty space, a dragging hand over a note, and a left-right arrow over the resize handle.
 
@@ -287,7 +289,7 @@ When the **SEL** button in the Live Performance toolbar is **on**:
 | Action | Result |
 |---|---|
 | **Ctrl + scroll wheel** | Zoom in / out around the mouse position |
-| **Scroll wheel** | Scroll horizontally (deltaX) and vertically (deltaY) |
+| **Scroll wheel** | Scroll horizontally and vertically |
 | **Horizontal scrollbar** | Pan left / right |
 | **Vertical scrollbar** | Scroll up / down through note rows |
 | **Arrow keys** (no modifier) | Scroll the grid one step/row at a time |
@@ -299,9 +301,7 @@ When the **SEL** button in the Live Performance toolbar is **on**:
 ## Playback
 
 - **Space** -- Start playback from the seek cursor (gold triangle in ruler). Press again to stop.
-- The **playhead** (green line) tracks the current audio position in real time.
-- The playhead runs on a 30 Hz display timer and also extends into the automation lane.
-- Playback position is managed by `MidiBridge`; the Clip Editor forwards Space key events to the bridge.
+- The **playhead** (green line) tracks the current playback position in real time and also extends into the automation lane.
 
 ---
 
@@ -314,7 +314,7 @@ The scale filter affects the appearance and visibility of note rows.
 3. Rows for pitches outside the scale get a reddish background in the note grid.
 4. Toggle **Hide Notes** (eye button) to collapse out-of-scale rows so only scale-note rows are visible.
 
-When Hide Notes is active and a scale is set, the row count shrinks to only the visible pitches. Scroll and coordinate conversion both adapt automatically. Scale filter is not available in Drum Kit mode.
+Scale filter is not available in Drum Kit mode.
 
 ---
 
@@ -322,11 +322,11 @@ When Hide Notes is active and a scale is set, the row count shrinks to only the 
 
 ### Opening
 
-Click the **Automation** toggle button in the toolbar. The lane opens below the note grid, separated by a resizable 6 px divider.
+Click the **Automation** toggle button in the toolbar. The lane opens below the note grid, separated by a resizable divider.
 
 ### Resizing
 
-Drag the **divider bar** (the horizontal strip with grip dots between the note grid and the automation lane) up or down. The lane height is clamped to 50-500 px and saved per track.
+Drag the **divider bar** (the horizontal strip with grip dots between the note grid and the automation lane) up or down. The lane height is saved per track.
 
 ### Parameter Panel (left side, labelled "AUTOM")
 
@@ -350,14 +350,11 @@ Each pinned parameter has a distinct colour chosen from a fixed palette of 8 col
 
 - **Left-click** in the content area: places a breakpoint at that step and value.
 - **Left-click and drag**: continuously places breakpoints as you move -- useful for drawing smooth curves by hand.
-- **Right-click**: erases the nearest breakpoint (within 2 steps of the click position).
+- **Right-click**: erases the nearest breakpoint.
 
-The value scale runs from 0% (bottom) to 100% (top). Horizontal guide lines are drawn at 0 / 25 / 50 / 75 / 100%, with labels at 0 / 50 / 100%.
+The value scale runs from 0% (bottom) to 100% (top). Horizontal guide lines are drawn at 0 / 25 / 50 / 75 / 100%.
 
-The curve is drawn as:
-1. A **filled area** under the line (semi-transparent, parameter colour).
-2. A **polyline** connecting all breakpoints (1.5 px, parameter colour).
-3. **Circular handles** at each breakpoint (filled with parameter colour, hollow centre).
+The curve is displayed as a filled area under the line, a connecting line through all breakpoints, and circular handles at each breakpoint.
 
 The curve is held at the last breakpoint value to the right edge of the lane (flat hold).
 
@@ -448,7 +445,7 @@ Track type labels: **Melody**, **Drum Kit**, **Sampler**, **Sample**.
 
 ## Drum Kit Mode
 
-When the current track is of type `drum_kit`, the Clip Editor switches to **Drum Kit mode**:
+When the current track type is **Drum Kit**, the Clip Editor switches to Drum Kit mode:
 
 - The piano key panel shows GM drum pad names (MIDI 35-81) instead of piano keys.
 - Scale, Hide Notes, Load MIDI, and Generate buttons are hidden.
@@ -461,19 +458,19 @@ When the current track is of type `drum_kit`, the Clip Editor switches to **Drum
 
 ## Sampled Instrument Mode
 
-When the current track is of type `sampled_instrument`:
+When the current track type is **Sampled Instrument**:
 
-- A **Sampler Instrument** combo and status label appear in the toolbar (replacing some right-side space).
-- The combo lists available sample presets; selecting one loads the preset asynchronously.
-- The status label shows loading progress (animated timer icon) and confirms completion (green checkmark, shown for ~3 s).
+- A **Sampler Instrument** combo and status label appear in the toolbar.
+- The combo lists available sample presets; selecting one loads the preset.
+- The status label shows loading progress (animated timer icon) and confirms completion (green checkmark, shown briefly).
 
 ---
 
 ## Undo System
 
-Each destructive operation (adding, moving, resizing, deleting, cutting, pasting, duplicating notes) saves a snapshot of the notes vector before the change. The undo stack holds up to 50 levels. The redo stack is cleared whenever a new edit is made.
+Each destructive operation (adding, moving, resizing, deleting, cutting, pasting, duplicating notes) saves a snapshot before the change. The undo stack holds up to 50 levels. The redo stack is cleared whenever a new edit is made.
 
-Automation edits (setting breakpoints by clicking or via the formula dialog) are applied directly and do not currently participate in the undo stack. Use **Clear** in the automation panel to erase all breakpoints if needed.
+Automation edits (setting breakpoints by clicking or via the formula dialog) are applied directly and do not participate in the undo stack. Use **Clear** in the automation panel to erase all breakpoints if needed.
 
 ---
 

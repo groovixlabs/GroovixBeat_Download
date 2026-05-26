@@ -61,17 +61,16 @@ Inserts a rhythmic drum pattern from a built-in library of grooves organised by 
 
 ### Drum instruments
 
-Each pattern is a 16-step grid across several instruments. The abbreviations map to standard General MIDI drum notes:
+Each pattern is a 16-step grid across several instruments:
 
-| Abbrev. | Instrument | GM MIDI note |
-|---|---|---|
-| BD | Bass Drum | 36 |
-| SD | Snare Drum | 38 |
-| CH | Closed Hi-Hat | 42 |
-| OH | Open Hi-Hat | 46 |
-| RC | Ride Cymbal | 51 |
-| HH | Hi-Hat (foot) | 44 |
-| AC | Accent (skip) | — |
+| Abbrev. | Instrument |
+|---|---|
+| BD | Bass Drum |
+| SD | Snare Drum |
+| CH | Closed Hi-Hat |
+| OH | Open Hi-Hat |
+| RC | Ride Cymbal |
+| HH | Hi-Hat (foot) |
 
 ### Clip length
 

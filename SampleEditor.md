@@ -1,4 +1,4 @@
-# Sample Editor — User Manual
+# Sample Editor -- User Manual
 
 The **Sample Editor** is a full-overlay waveform editor that opens when you click a sample clip cell in the Live Performance grid. It lets you load, trim, fade, silence, slice, pitch-shift, and time-stretch audio directly inside GrooviXBeat without leaving the session.
 
@@ -7,12 +7,14 @@ The **Sample Editor** is a full-overlay waveform editor that opens when you clic
 ## Opening and Closing
 
 - **Open**: Click any occupied (or empty) sample clip cell in the Live Performance grid.
-- **Close**: Click the **X** button at the far right of the toolbar, or press **Esc** (if the dialog is focused).
-- Changes are applied immediately and in memory. The edited audio is flushed to disk when the project is saved.
+- **Close**: Click the **X** button at the far right of the toolbar, or press **Esc**.
+- Changes are applied immediately in memory. The edited audio is saved to disk when the project is saved.
 
 ---
 
 ## Layout
+
+![Sample Editor](GroovixBeat_03.png)
 
 ```
 +------------------------------------------------------------------+
@@ -24,23 +26,23 @@ The **Sample Editor** is a full-overlay waveform editor that opens when you clic
 |   Waveform area  (scroll, zoom, select, split)                   |
 |                                                                  |
 +------------------------------------------------------------------+
-| Scrollbar (horizontal pan / zoom range indicator)                |
+| Scrollbar (horizontal pan)                                       |
 +------------------------------------------------------------------+
 | Info bar  filename | duration | offset | BPM | selection         |
 +------------------------------------------------------------------+
 ```
 
-| Zone | Height | Purpose |
-|---|---|---|
-| Toolbar | 36 px | All edit buttons, playback controls, clip settings |
-| Ruler | 18 px | Time axis; click or drag to set the paste/seek cursor |
-| Waveform | remaining | Waveform display; selection and split interaction |
-| Scrollbar | 12 px | Horizontal pan; thumb width reflects the current zoom level |
-| Info bar | 24 px | Filename (left, gold), stats (dim), hover hint (right, gold) |
+| Zone | Purpose |
+|---|---|
+| Toolbar | All edit buttons, playback controls, clip settings |
+| Ruler | Time axis; click or drag to set the paste/seek cursor |
+| Waveform | Waveform display; selection and split interaction |
+| Scrollbar | Horizontal pan |
+| Info bar | Filename (left, gold), stats (dim), hover hint (right, gold) |
 
 ---
 
-## Toolbar Buttons — Left Side
+## Toolbar Buttons -- Left Side
 
 Buttons appear left to right in this order.
 
@@ -50,7 +52,7 @@ Buttons appear left to right in this order.
 
 Opens a file browser to replace the current clip with a new audio file. Supported formats: WAV, AIF/AIFF, MP3, OGG, FLAC, M4A, CAF.
 
-- If **Auto-Q** is on in the Live Performance toolbar and the file's BPM is reliably detected (from the filename or ACID metadata), the file is automatically WSOLA-stretched to the project tempo and the clip length is snapped to the nearest bar count.
+- If **Auto-Q** is on in the Live Performance toolbar and the file's BPM is detectable (from the filename or embedded metadata), the file is automatically time-stretched to the project tempo and the clip length is snapped to the nearest bar count.
 
 ---
 
@@ -99,10 +101,10 @@ Removes all audio **outside** the current selection, keeping only the selected r
 
 ### Fade In
 
-Opens the **Fade In Level** dialog. A horizontal slider lets you set the start level (0–100%). At 0% the audio fades from silence up to full volume over the selection range. At 50% the audio fades from half volume to full.
+Opens the **Fade In Level** dialog. A horizontal slider lets you set the start level (0-100%). At 0% the audio fades from silence up to full volume over the selection range. At 50% the audio fades from half volume to full.
 
 - Fade applies to the current selection, or the whole sample if nothing is selected.
-- The fade is linear (applied to amplitude, not dB).
+- The fade is linear (applied to amplitude).
 
 ---
 
@@ -116,7 +118,7 @@ Opens the **Fade Out Level** dialog. The slider sets the end level. At 0% the au
 
 ### Silence
 
-Replaces the current selection (or the whole sample if nothing is selected) with digital silence (all zeros). This is a destructive edit — use Undo if you apply it by mistake.
+Replaces the current selection (or the whole sample if nothing is selected) with silence. This is a destructive edit -- use Undo if you apply it by mistake.
 
 ---
 
@@ -129,22 +131,22 @@ Places a **split marker** at the current paste cursor position, dividing the sam
 - Each section can be independently focused (click within it), labelled, deleted, or operated on.
 - Keyboard shortcut: **S** (when a paste cursor is active).
 - To remove all splits, undo with **Ctrl+Z** or press **Reset**.
-- Split data is saved as a `.splits` sidecar file next to the audio file and restored automatically when the editor reopens.
+- Split data is saved alongside the audio file and restored automatically when the editor reopens.
 
 ---
 
 ### Auto-Split (Auto Slicer)
 
-Opens the **Auto-Split** dialog which uses spectral analysis to detect structural boundaries automatically and divides the sample into named sections.
+Opens the **Auto-Split** dialog which analyses the audio to detect structural boundaries automatically and divides the sample into named sections.
 
 **Dialog options:**
 
 | Option | Behaviour |
 |---|---|
-| **Auto-detect** | Analyser decides how many boundaries to place based on the material |
+| **Auto-detect** | Analysis decides how many boundaries to place based on the material |
 | **2 / 4 / 8 / 16 sections** | Forces exactly that many equally or structurally spaced splits |
 
-Click **Analyze & Split**. A wait cursor is shown during analysis (which runs on the audio thread). When complete:
+Click **Analyze & Split**. A wait cursor is shown during analysis. When complete:
 
 - Split markers are placed at the detected boundaries.
 - Each section is automatically labelled from the set: **Intro**, **Verse**, **Buildup**, **Drop**, **Break**, **Outro**.
@@ -158,7 +160,7 @@ If no clear boundaries are found, a message dialog appears. Try a longer sample 
 
 ### Tape Slow
 
-Slows the sample down by a tape-stretch factor: **-1 semitone pitch**, **+5.9% duration**. This simulates the effect of slowing analogue tape — pitch drops and the sample gets slightly longer.
+Slows the sample down: **-1 semitone pitch**, **+5.9% duration**. This simulates the effect of slowing analogue tape -- pitch drops and the sample gets slightly longer.
 
 Each click applies one step. Use Undo to reverse.
 
@@ -166,13 +168,13 @@ Each click applies one step. Use Undo to reverse.
 
 ### Tape Fast
 
-Speeds the sample up: **+1 semitone pitch**, **-5.6% duration**. Simulates speeding tape — pitch rises and the sample gets slightly shorter.
+Speeds the sample up: **+1 semitone pitch**, **-5.6% duration**. Simulates speeding tape -- pitch rises and the sample gets slightly shorter.
 
 ---
 
 ### Pitch Up
 
-Raises pitch by **+1 semitone** using WSOLA time-domain pitch shifting. Duration is unchanged. Unlike Tape Fast, this does not alter the timing of the sample.
+Raises pitch by **+1 semitone**. Duration is unchanged. Unlike Tape Fast, this does not alter the timing of the sample.
 
 ---
 
@@ -191,17 +193,17 @@ Opens the **BPM / Stretch** dialog for time-stretching the sample to a target BP
 | Field | Description |
 |---|---|
 | **Sample BPM** | The BPM of the sample. Pre-filled if detected from the filename or audio metadata. |
-| **Analyze** | Runs DSP beat analysis in a background thread to detect the sample BPM. Result is filled into the BPM field when complete. |
+| **Analyze** | Runs beat analysis to detect the sample BPM. Result is filled into the BPM field when complete. |
 | **Algorithm** | The time-stretch algorithm to use. |
 | **Source** | Shows where the current BPM value came from. |
 | **Project BPM** | The current project tempo (read-only). |
-| **Stretch to Project BPM** | Applies WSOLA (or selected algorithm) to warp the sample duration so it plays at the project tempo. |
+| **Stretch to Project BPM** | Stretches the sample so it plays at the project tempo. |
 
 **BPM detection priority:**
 
 1. Parsed from the filename (e.g. `loop_120bpm.wav`, `funk_128_groove.wav`).
 2. ACID / metadata embedded in the audio file.
-3. DSP analysis (click **Analyze**).
+3. Automatic analysis (click **Analyze**).
 4. Manual entry.
 
 **Stretch algorithms:**
@@ -230,29 +232,29 @@ Available snap resolutions (set by the main toolbar Q): 1/16, 1/4, 1/2, 1 bar.
 
 ---
 
-## Toolbar Controls — Right Side
+## Toolbar Controls -- Right Side
 
 These controls appear at the right end of the toolbar.
 
 ---
 
-### Len: — N — + (Clip Length)
+### Len: -- N -- + (Clip Length)
 
-Sets the **clip length in bars** — how many bars of the arrangement timeline this clip occupies when triggered.
+Sets the **clip length in bars** -- how many bars of the arrangement timeline this clip occupies when triggered.
 
 | Control | Action |
 |---|---|
-| **–** button | Decrease length by 1 bar |
-| **N** (value label) | Shows current bar count. Double-click to type a value directly (1–256 bars). |
+| **-** button | Decrease length by 1 bar |
+| **N** (value label) | Shows current bar count. Double-click to type a value directly (1-256 bars). |
 | **+** button | Increase length by 1 bar |
 
-The clip-end boundary is shown in the waveform as a dashed gold vertical line labelled **clip end**. Audio to the right of this line is dimmed — it is loaded but will not play.
+The clip-end boundary is shown in the waveform as a dashed gold vertical line labelled **clip end**. Audio to the right of this line is dimmed -- it is loaded but will not play.
 
 ---
 
 ### Q (Quantize Combo)
 
-Sets the **launch quantise** for this clip — how precisely the clip start aligns to the beat when triggered from the Live Performance grid.
+Sets the **launch quantise** for this clip -- how precisely the clip start aligns to the beat when triggered from the Live Performance grid.
 
 | Option | Behaviour |
 |---|---|
@@ -286,7 +288,7 @@ Closes the Sample Editor overlay and returns to the Live Performance grid. Any e
 | Silence region | Dark hatching | Gap between audio end and clip-end boundary |
 | Pre-roll region | Dark blue hatching | Lead-in before the sample's offset start point |
 | Bar lines | Grey vertical lines | Bar numbers shown above each line |
-| Beat lines | Darker grey lines | Beat subdivisions (only drawn when zoomed in enough) |
+| Beat lines | Darker grey lines | Beat subdivisions |
 
 ---
 
@@ -296,9 +298,9 @@ Closes the Sample Editor overlay and returns to the Live Performance grid. Any e
 
 When the **SEL** button in the Live Performance toolbar is **off**:
 
-- **Click** anywhere in the waveform — places the paste cursor (teal). This is the position used for Split, Paste, and BPM-referenced playback.
+- **Click** anywhere in the waveform -- places the paste cursor (teal). This is the position used for Split, Paste, and playback.
 - Clicking inside a split section also **focuses** that section (purple border). Edit operations (Trim, Fade, Silence, Duplicate, Delete) will target that section's range.
-- No drag-selection is possible — dragging does nothing.
+- No drag-selection is possible -- dragging does nothing.
 
 ### Select Mode
 
@@ -316,9 +318,9 @@ When a selection is active, its duration is shown both in the waveform overlay a
 
 All edit operations determine their target range in this priority order:
 
-1. **Rubber-band selection** (drag in SEL mode) — highest priority.
-2. **Focused split section** (click in split mode) — used if no rubber-band selection exists.
-3. **Whole sample** — used when neither a selection nor a focused section is active.
+1. **Rubber-band selection** (drag in SEL mode) -- highest priority.
+2. **Focused split section** (click in split mode) -- used if no rubber-band selection exists.
+3. **Whole sample** -- used when neither a selection nor a focused section is active.
 
 ---
 
@@ -326,7 +328,7 @@ All edit operations determine their target range in this priority order:
 
 The ruler strip (below the toolbar) shows time in seconds and minutes. Click or drag in the ruler to position the paste cursor. The teal triangle and time label in the ruler always show the current cursor position.
 
-Ruler interaction respects the **Snap** button — if Snap is on, the cursor jumps to the nearest grid line.
+Ruler interaction respects the **Snap** button -- if Snap is on, the cursor jumps to the nearest grid line.
 
 ---
 
@@ -344,10 +346,10 @@ Ruler interaction respects the **Snap** button — if Snap is on, the cursor jum
 
 ## Playback
 
-- **Space** — Play from the paste cursor (or from the selection / focused section start if SEL mode is on). Press again to stop.
-- **Home** — Return the cursor to position 0 and stop playback.
-- **Loop button** — When on, the clip loops; when off, it plays once and stops.
-- When a **selection** or **focused split section** is active in SEL mode, Space plays only that region sample-accurately (no timer race — the audio thread enforces the stop via a sample counter).
+- **Space** -- Play from the paste cursor (or from the selection / focused section start if SEL mode is on). Press again to stop.
+- **Home** -- Return the cursor to position 0 and stop playback.
+- **Loop button** -- When on, the clip loops; when off, it plays once and stops.
+- When a **selection** or **focused split section** is active in SEL mode, Space plays only that region.
 - The green **playhead** line moves in real time during playback and wraps back on loop.
 
 ---
@@ -363,19 +365,19 @@ Slicing divides the sample into independently addressable sections without modif
 3. Repeat to add more markers. You can have any number of splits.
 4. Click inside any section to **focus** it (purple border). Its label, duration, and index appear in the status text.
 5. With a section focused, all edit operations target that section only:
-   - **Trim** — keeps only the focused section, discards the rest.
-   - **Silence** — silences the section.
-   - **Delete / Backspace** — removes the section and closes the gap (adjusts adjacent split markers automatically).
-   - **Fade In / Fade Out** — applies the fade within the section boundaries.
-   - **Duplicate** — copies the section and appends it immediately after.
-   - **Ctrl+X / Ctrl+C / Ctrl+V** — cut, copy, paste within the context of the section.
-6. Split data is saved to `<audiofile>.splits` next to the audio. It is loaded automatically when the editor reopens.
+   - **Trim** -- keeps only the focused section, discards the rest.
+   - **Silence** -- silences the section.
+   - **Delete / Backspace** -- removes the section and closes the gap (adjusts adjacent split markers automatically).
+   - **Fade In / Fade Out** -- applies the fade within the section boundaries.
+   - **Duplicate** -- copies the section and appends it immediately after.
+   - **Ctrl+X / Ctrl+C / Ctrl+V** -- cut, copy, paste within the context of the section.
+6. Split data is saved alongside the audio file and loaded automatically when the editor reopens.
 
 ### Auto-Split workflow
 
 1. Click **Auto-Split**.
 2. Choose **Auto-detect** or a fixed section count (2, 4, 8, or 16).
-3. Click **Analyze & Split**. Analysis runs on the audio thread (wait cursor shown).
+3. Click **Analyze & Split**. A wait cursor is shown during analysis.
 4. Sections are labelled automatically: **Intro**, **Verse**, **Buildup**, **Drop**, **Break**, **Outro**.
 5. The first section is always labelled **Intro** and the last **Outro** when the analysis finds them to be quiet or ambient.
 6. Click any section to focus it and use it as the target for edit operations.
@@ -409,7 +411,7 @@ The info bar at the bottom shows (left to right):
 
 | Item | Colour | Shown when |
 |---|---|---|
-| Filename (truncated to 35 chars) | Gold, bold | A file is loaded |
+| Filename | Gold, bold | A file is loaded |
 | `Duration: Xs` | Dim | Always |
 | `Offset: +Xs` | Dim | Sample offset != 0 |
 | `BPM: NNN` | Dim | BPM was detected or entered |
@@ -420,12 +422,12 @@ The info bar at the bottom shows (left to right):
 
 ## Tips
 
-- Use **Trim** after a rubber-band selection to destructively crop the file to just what you want — faster than re-loading a different file.
+- Use **Trim** after a rubber-band selection to destructively crop the file to just what you want -- faster than re-loading a different file.
 - Use **Auto-Split** on a long DJ mix or stem export to automatically get labelled sections you can then trigger individually from the clip grid.
-- **Tape Slow / Tape Fast** applied repeatedly produce lo-fi pitch artefacts useful for effects. Undo chain lets you compare multiple steps.
-- The **Nudge** buttons are non-destructive — they shift the playback offset without touching the file. Use them to align a loop's first transient with the bar grid when the file has a few milliseconds of pre-roll silence.
+- **Tape Slow / Tape Fast** applied repeatedly produce lo-fi pitch artefacts useful for effects. The undo chain lets you compare multiple steps.
+- The **Nudge** buttons are non-destructive -- they shift the playback offset without touching the file. Use them to align a loop's first transient with the bar grid when the file has a few milliseconds of pre-roll silence.
 - **Snap** + a coarse Q setting (1 Bar) makes it easy to place split markers exactly on bar boundaries when the BPM is set correctly.
-- **WSOLA** (the default stretch algorithm) is good for drums and percussion. Use **Phase Vocoder** for sustained pads, strings, or vocals where transient sharpness matters less than pitch smoothness.
+- **Medium - WSOLA** (the default stretch algorithm) is good for drums and percussion. Use **High - Phase Vocoder** for sustained pads, strings, or vocals where pitch smoothness matters more than transient sharpness.
 - After a **Paste**, the pasted region is automatically wrapped in split markers so you can immediately Trim, Delete, or re-examine it without losing the surrounding audio.
 
 ---

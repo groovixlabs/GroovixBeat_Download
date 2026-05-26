@@ -121,9 +121,9 @@ Drop a MIDI file onto a melody-type track cell. Notes are imported and the clip 
 
 The **Auto-Q** button in the top toolbar toggles automatic tempo matching.
 
-When Auto-Q is **ON** and a file with a detectable BPM is loaded (BPM from filename such as `loop_120bpm.wav`, or embedded ACID metadata), GrooviXBeat will:
+When Auto-Q is **ON** and a file with a detectable BPM is loaded (BPM from filename such as `loop_120bpm.wav`, or embedded metadata), GrooviXBeat will:
 
-1. WSOLA time-stretch the audio to match the project tempo.
+1. Time-stretch the audio to match the project tempo.
 2. Snap the clip length to the nearest bar count.
 3. Save the stretched audio to disk alongside the project.
 
@@ -468,17 +468,17 @@ The waveform is displayed below the toolbar:
 
 ### 6c. Selection & Editing
 
-Most edit operations act on the current selection. If no selection exists, the operation acts on the entire audio file. After each edit, the waveform reloads automatically and peaks are recalculated. The undo/redo stack is per-session and clears when a new file is loaded.
+Most edit operations act on the current selection. If no selection exists, the operation acts on the entire audio file. After each edit, the waveform updates automatically. The undo/redo stack is per-session and clears when a new file is loaded.
 
 ---
 
 ### 6d. BPM Detection & Stretch
 
 Click the **BPM** button to open the BPM dialog. GrooviXBeat shows:
-- Detected BPM (from filename, ACID metadata, or DSP analysis)
+- Detected BPM (from filename, embedded metadata, or automatic analysis)
 - Detection source
 
-Click **Stretch to project BPM** to WSOLA time-stretch the audio to the project tempo. The stretched file is saved to disk and the clip length is snapped to the nearest bar count.
+Click **Stretch to project BPM** to time-stretch the audio to the project tempo. The stretched file is saved to disk and the clip length is snapped to the nearest bar count.
 
 > The BPM button is enabled whenever a file is loaded, regardless of whether a BPM was detected.
 

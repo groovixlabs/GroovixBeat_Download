@@ -40,16 +40,16 @@ Positions are written as **Bar.Step**, where bar and step are both **1-based**.
 - **Bar** — bar number (1, 2, 3, …)
 - **Step** — 1/16th note position within the bar (1–16)
 
-| You write | Meaning | Absolute step |
-|---|---|---|
-| `1.1` | Bar 1, Step 1 (downbeat) | 0 |
-| `1.2` | Bar 1, Step 2 | 1 |
-| `1.3` | Bar 1, Step 3 | 2 |
-| `1.5` | Bar 1, Step 5 (beat 2) | 4 |
-| `1.9` | Bar 1, Step 9 (beat 3) | 8 |
-| `1.13` | Bar 1, Step 13 (beat 4) | 12 |
-| `2.1` | Bar 2, Step 1 (downbeat) | 16 |
-| `3.1` | Bar 3, Step 1 | 32 |
+| You write | Meaning |
+|---|---|
+| `1.1` | Bar 1, Step 1 (downbeat) |
+| `1.2` | Bar 1, Step 2 |
+| `1.3` | Bar 1, Step 3 |
+| `1.5` | Bar 1, Step 5 (beat 2) |
+| `1.9` | Bar 1, Step 9 (beat 3) |
+| `1.13` | Bar 1, Step 13 (beat 4) |
+| `2.1` | Bar 2, Step 1 (downbeat) |
+| `3.1` | Bar 3, Step 1 |
 
 **Time units:**
 - 1 step = 1/16th note
@@ -410,63 +410,6 @@ These are common mistakes that will produce an error and prevent insertion:
 | `1.1-2.1=vel=80` | Parameter before note | `1.1-2.1=C4 vel=80` |
 | `1.1-2.1=C4 filter=50` | Unknown parameter name | `1.1-2.1=C4 mod=50` |
 | `1.1-2.1=C4+E4 vel=80 100` | Value without a `param=` key | `1.1-2.1=C4+E4 vel=80 vol=100` |
-
----
-
-## LLM Prompt Rules
-
-The following compact rule set is designed to be included in an LLM system prompt so the model can generate valid Note Formula text.
-
-```
-NOTE FORMULA RULES — GrooviXBeat
-
-Format (one line per note):
-  Start.Step-End.Step=Note [param=value ...]
-
-Positions (Bar.Step):
-- Both bar and step are integers, 1-based.
-- Steps are 1–16 per bar (1 step = 1/16th note). Step 17+ is invalid — use next bar.
-- Absolute offset = (bar-1)*16 + (step-1).
-- Beat landmarks: beat 1 = B.1, beat 2 = B.5, beat 3 = B.9, beat 4 = B.13.
-- Minimum duration is 1 step (1/16th note).
-- End must be strictly after start. Same position = error.
-
-Duration quick-ref (N = step number):
-  1/16  = 1 step   → B.N - B.(N+1)   e.g. 1.1-1.2
-  1/8   = 2 steps  → B.N - B.(N+2)   e.g. 1.1-1.3
-  1/4   = 4 steps  → B.N - B.(N+4)   e.g. 1.1-1.5
-  1/2   = 8 steps  → B.N - B.(N+8)   e.g. 1.1-1.9
-  whole = 16 steps → B.1 - (B+1).1   e.g. 1.1-2.1
-
-Note names:
-- Letter A-G (case-insensitive) + optional accidental + octave integer.
-- Sharp: # (e.g. D#4). Flat: lowercase b only (e.g. Bb3, Eb4).
-- Uppercase B is always the note B, never a flat.
-- C4 = MIDI 60 (middle C). C3=48, C5=72.
-- Or use plain MIDI number 0-127.
-- Valid practical range: C1 (24) to C7 (84).
-
-Chords:
-- Join notes with + and NO spaces: C4+E4+G4
-
-Parameters (all optional, space-separated after the note):
-- vel=0-127          note velocity, default 100
-- vol=0-100          volume (flat) or vol=FROM>TO (ramp)
-- pan=0-100          pan; 50=centre, 0=left, 100=right
-- pitch=0-100        pitch bend; 50=centre (no bend), 0=max down, 100=max up
-- mod=0-100          modulation; 0=none, 100=maximum
-
-Ramps: param=FROM>TO interpolates linearly over the note's time range.
-Comments: # to end of line. Blank lines ignored.
-
-NEVER:
-- Use step > 16 (e.g. 1.17 is invalid — write 2.1 instead).
-- Write zero-duration notes (start == end).
-- Put end before start.
-- Put spaces inside note names or around + in chords.
-- Use uppercase B as a flat symbol.
-- Use param names other than vel, vol, pan, pitch/pitchbend, mod/modulation.
-```
 
 ---
 
