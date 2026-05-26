@@ -302,6 +302,8 @@ If any track or scene name cannot be resolved, a red error message appears insid
 
 > See **[docs/ArrangementFormula.md](ArrangementFormula.md)** for the full syntax reference, token formats, naming shortcuts, and complete examples.
 
+> See **[docs/ArrangementView.md](ArrangementView.md)** for the complete Arrangement View & Live Performance reference — all toolbar buttons, edit and select modes, section markers, clip placement, zoom controls, keyboard shortcuts, and tips.
+
 ---
 
 ## 5. Piano Roll Editor
@@ -399,6 +401,8 @@ The **Remap C Major to target scale** option in Track Properties transposes inco
 |------|---------|
 | Left | Track type and loaded VST instrument name (dim text) |
 | Right | Hint text for the button or dropdown under the mouse (gold) |
+
+> See **[docs/ClipEditor.md](ClipEditor.md)** for the complete Piano Roll / Clip Editor reference — all toolbar buttons, note editing, automation lane, scale filter, drum kit mode, sampled instrument mode, keyboard shortcuts, and tips.
 
 ---
 
@@ -670,6 +674,9 @@ When you drop or load audio files, GrooviXBeat copies them into the project's sa
 
 | Topic | Document |
 |-------|----------|
+| Live Performance & Arrangement View (full reference) | [docs/ArrangementView.md](ArrangementView.md) |
+| Piano Roll / Clip Editor (full reference) | [docs/ClipEditor.md](ClipEditor.md) |
+| Sample Editor (full reference) | [docs/SampleEditor.md](SampleEditor.md) |
 | Automation Formula syntax | [docs/AutomationFormula.md](AutomationFormula.md) |
 | Note Formula syntax (Generator) | [docs/NoteFormula.md](NoteFormula.md) |
 | Arrangement Wizard formula syntax | [docs/ArrangementFormula.md](ArrangementFormula.md) |
