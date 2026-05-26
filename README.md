@@ -1,6 +1,6 @@
-﻿# GrooviXBeat — User Manual
+# GrooviXBeat — User Manual
 
-GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It combines the clip-launching workflow with a built-in piano roll, waveform editor, VST3 support, and a live performance grid — all in a single self-contained application with no browser or web layer.
+GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It combines the clip-launching workflow of Ableton Live with a built-in piano roll, waveform editor, VST3 support, and a live performance grid — all in a single self-contained application with no browser or web layer.
 
 ---
 
@@ -18,23 +18,33 @@ GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It co
    - [3g. Scene Properties Dialog](#3g-scene-properties-dialog)
    - [3h. Mixer](#3h-mixer)
    - [3i. Status Bar](#3i-status-bar)
-4. [Piano Roll Editor](#4-piano-roll-editor)
-   - [4a. Toolbar](#4a-toolbar)
-   - [4b. Note Editing](#4b-note-editing)
-   - [4c. Automation Lane](#4c-automation-lane)
-   - [4d. Scale Filter](#4d-scale-filter)
-   - [4e. Info Bar](#4e-info-bar)
-5. [Sample Editor](#5-sample-editor)
+4. [Arrangement Mode & Timeline](#4-arrangement-mode--timeline)
+   - [4a. Switching to Arrangement Mode](#4a-switching-to-arrangement-mode)
+   - [4b. Timeline View](#4b-timeline-view)
+   - [4c. Placing Clips on the Timeline](#4c-placing-clips-on-the-timeline)
+   - [4d. Section Markers](#4d-section-markers)
+   - [4e. Arrangement Wizard](#4e-arrangement-wizard)
+5. [Piano Roll Editor](#5-piano-roll-editor)
    - [5a. Toolbar](#5a-toolbar)
-   - [5b. Waveform View](#5b-waveform-view)
-   - [5c. Selection & Editing](#5c-selection--editing)
-   - [5d. BPM Detection & Stretch](#5d-bpm-detection--stretch)
+   - [5b. Note Editing](#5b-note-editing)
+   - [5c. Automation Lane](#5c-automation-lane)
+   - [5d. Scale Filter](#5d-scale-filter)
    - [5e. Info Bar](#5e-info-bar)
-6. [Generator](#6-generator)
-7. [FX Chain Editor](#7-fx-chain-editor)
-8. [VST3 Plugins](#8-vst3-plugins)
-9. [Project Management](#9-project-management)
-10. [Tips & Keyboard Shortcuts](#10-tips--keyboard-shortcuts)
+6. [Sample Editor](#6-sample-editor)
+   - [6a. Toolbar](#6a-toolbar)
+   - [6b. Waveform View](#6b-waveform-view)
+   - [6c. Selection & Editing](#6c-selection--editing)
+   - [6d. BPM Detection & Stretch](#6d-bpm-detection--stretch)
+   - [6e. Info Bar](#6e-info-bar)
+7. [Note Generator](#7-note-generator)
+   - [7a. Chord / Arp Tab](#7a-chord--arp-tab)
+   - [7b. Drum Patterns Tab](#7b-drum-patterns-tab)
+   - [7c. Bass Lines Tab](#7c-bass-lines-tab)
+   - [7d. Formula Tab](#7d-formula-tab)
+8. [FX Chain Editor](#8-fx-chain-editor)
+9. [VST3 Plugins](#9-vst3-plugins)
+10. [Project Management](#10-project-management)
+11. [Tips & Keyboard Shortcuts](#11-tips--keyboard-shortcuts)
 
 ---
 
@@ -45,7 +55,8 @@ GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It co
 3. Click a track header to open Track Properties and choose the track type (Sample, Melody, Sampled Instrument, or Drum Kit).
 4. Drop an audio file onto a clip cell, or click a clip cell to open the Piano Roll / Sample Editor and add content.
 5. Click the Play button (or press **Space**) to start playback.
-6. In Performance Mode, click clip cells to trigger individual clips live.
+6. In **Performance Mode**, click clip cells to trigger individual clips live.
+7. Switch to **Arrangement Mode** to lay out clips on a linear timeline.
 
 ---
 
@@ -54,10 +65,10 @@ GrooviXBeat is a native desktop groovebox and sequencer built in JUCE C++. It co
 The interface is divided into two areas:
 
 **Top Toolbar**
-Contains transport controls (Play / Stop / Record), tempo, time signature, quantize setting, and mode buttons (Song Mode / Performance Mode). The **Auto-Q** button toggles automatic BPM stretch on file load.
+Contains transport controls (Play / Stop / Record), tempo, time signature, quantize setting, and mode buttons (**Performance Mode** / **Arrangement Mode**). The **Auto-Q** button toggles automatic BPM stretch on file load.
 
-**Live Performance Grid**
-The main working area — a scrollable grid of clip cells organised by scenes (rows) and tracks (columns). The mixer panel sits below the grid.
+**Live Performance Grid / Arrangement Timeline**
+The main working area. In Performance Mode this is a scrollable grid of clip cells organised by scenes (rows) and tracks (columns), with the mixer panel below. In Arrangement Mode the same clips are laid out on a horizontal timeline with a playhead and section markers.
 
 ---
 
@@ -83,9 +94,6 @@ Each cell is a clip. A clip can hold:
 | Playing | Highlighted border, moving playhead |
 | Queued | Pulsing indicator (waiting for next quantize boundary) |
 | Muted | Dimmed |
-
-**Song Mode**
-Click the scene play button (left of each row) to trigger that scene. Scenes play in sequence from top to bottom. Repeat count and other per-scene settings are controlled via the Scene Properties dialog.
 
 **Performance Mode**
 Click any clip cell to trigger it independently. Clips launch at the next quantize boundary set in the toolbar. Multiple tracks can play different clips simultaneously.
@@ -176,7 +184,7 @@ Click a scene button (left of each row) to open the Scene Properties dialog.
 |-------|-------------|
 | **Name** | Rename the scene. |
 | **Signature** | Time signature: 4/4, 3/4, 6/8, 2/4. |
-| **Repeat** | How many times the scene loops before advancing (Song Mode). |
+| **Repeat** | How many times the scene loops before advancing (Arrangement Mode). |
 | **Quantize** | Launch quantize override: Inherit / 1/16 / 1/4 / 1/2 / 1 Bar. |
 | **Fade In / Fade Out** | Apply a volume fade at scene start or end. |
 
@@ -219,11 +227,90 @@ A thin bar at the very bottom of the Live Performance window shows status messag
 
 ---
 
-## 4. Piano Roll Editor
+## 4. Arrangement Mode & Timeline
+
+Arrangement Mode is the linear timeline view. Use it to compose a full song by placing clip instances at specific bar positions across all tracks, with section labels to mark song structure.
+
+### 4a. Switching to Arrangement Mode
+
+Click the **Arrangement** mode button in the top toolbar. The grid switches to a horizontal timeline view. Click **Performance** to switch back. Transport (Play / Stop) works in both modes.
+
+---
+
+### 4b. Timeline View
+
+The timeline shows all tracks as horizontal lanes. Time runs left to right, measured in bars.
+
+| Element | Description |
+|---------|-------------|
+| Bar ruler | Horizontal ruler across the top showing bar numbers |
+| Track lanes | One horizontal lane per track |
+| Clip instances | Rectangles placed at specific bar positions; coloured by scene |
+| Playhead | Vertical line showing the current playback position |
+| Section markers | Coloured label bands above the ruler marking song sections (Intro, Verse, Chorus, etc.) |
+
+Scroll the timeline horizontally with the scrollbar or mouse wheel. Zoom with **Ctrl + mouse wheel**.
+
+---
+
+### 4c. Placing Clips on the Timeline
+
+**Click to place** — click an empty area in a track lane to place the clip from the scene that occupies that row at the click position.
+
+**Drag to move** — drag an existing clip instance to a different bar position on the same track.
+
+**Right-click to remove** — right-click a clip instance to remove it from the timeline.
+
+Clip instances tile automatically: if you place a clip in a slot longer than the clip's own length, the clip repeats to fill the space.
+
+---
+
+### 4d. Section Markers
+
+Section markers label ranges of the timeline (e.g. "Intro", "Verse", "Bridge"). They appear as coloured bands above the bar ruler and are visible during both arrangement editing and playback.
+
+**Adding a marker**
+1. Click on the bar ruler to position the arrangement cursor.
+2. Click the **Label** button in the toolbar.
+3. Type the section name and set the duration.
+4. Click **Add**.
+
+**Editing a marker**
+Click the **Label** button when the cursor is exactly on an existing marker's start bar to edit its name or duration.
+
+**Splitting a section**
+Click the **Label** button when the cursor is inside (but not at the start of) an existing section to split it and insert a new named section at the cursor position.
+
+---
+
+### 4e. Arrangement Wizard
+
+The **Wizard** button (wand icon) opens the Arrangement Wizard — a text formula editor that lets you describe an entire arrangement in a few lines of text and apply it all at once.
+
+```
+TrackName: StartBar-DurationBars=SceneName, DurationBars=SceneName, ...
+```
+
+**Example:**
+```
+Lead:  1-8=Intro, 8=Verse, 8=Verse, 8=Chorus, 8=Outro
+Bass:  1-8=Intro, 8=Verse, 8=Verse, 8=Chorus, 8=Outro
+Drums: 1-8=Intro, 8=Verse, 16=Chorus, 8=Outro
+```
+
+If any track or scene name cannot be resolved, a red error message appears inside the dialog and nothing is placed until all lines are valid.
+
+> See **[docs/ArrangementFormula.md](ArrangementFormula.md)** for the full syntax reference, token formats, naming shortcuts, and complete examples.
+
+> See **[docs/ArrangementView.md](ArrangementView.md)** for the complete Arrangement View & Live Performance reference — all toolbar buttons, edit and select modes, section markers, clip placement, zoom controls, keyboard shortcuts, and tips.
+
+---
+
+## 5. Piano Roll Editor
 
 Open by clicking a clip cell on a melody, drum-kit, or sampled-instrument track.
 
-### 4a. Toolbar
+### 5a. Toolbar
 
 **Left side — icon buttons:**
 
@@ -233,9 +320,10 @@ Open by clicking a clip cell on a melody, drum-kit, or sampled-instrument track.
 | **Select** | Toggle: switch to selection mode. Click and drag to select a range of notes; move, copy, or delete as a group. |
 | **Automation** | Toggle: show/hide the automation lane below the note grid. |
 | **VST UI** | Open the VST instrument's own editor window *(melody tracks only)*. |
+| **MIDI Routing** | Open the MIDI routing dialog to configure MIDI input and output for the track. |
 | **Load MIDI** | Import notes from a `.mid` file into the current clip. |
 | **Clear** | Remove all notes from the current clip. |
-| **Generate** | Open the Generator to create chord progressions, arpeggios, or melody patterns. |
+| **Generate** | Open the Note Generator to create chord progressions, drum patterns, bass lines, or formula-based notes. |
 
 **Right side — dropdowns:**
 
@@ -250,7 +338,7 @@ Open by clicking a clip cell on a melody, drum-kit, or sampled-instrument track.
 
 ---
 
-### 4b. Note Editing
+### 5b. Note Editing
 
 The piano roll displays pitches vertically against time steps horizontally.
 
@@ -267,20 +355,39 @@ The piano roll displays pitches vertically against time steps horizontally.
 
 ---
 
-### 4c. Automation Lane
+### 5c. Automation Lane
 
-Click the **Automation** button to reveal the automation lane below the note grid. Automatable parameters:
+Click the **Automation** button in the toolbar to reveal the automation lane below the note grid.
 
+**Selecting a parameter**
+Use the parameter dropdown at the left of the lane to choose which value to automate:
+
+- Volume
+- Pan
 - Pitch Bend
 - Modulation (CC1)
-- Pan (CC10)
 - Any VST parameter exposed by the loaded instrument
 
-Draw automation values by clicking and dragging in the lane.
+**Drawing automation**
+Click and drag in the lane to draw breakpoints. The value at any step is linearly interpolated between adjacent breakpoints.
+
+**Renaming a parameter — Ren button**
+Click **Ren** to give the currently selected parameter a custom display name (e.g. rename "Modulation" to "Filter Sweep"). The custom name is saved with the project and can be used in the Automation Formula dialog.
+
+**Formula entry — Fn button**
+Click **Fn** to open the Automation Formula dialog. Type bar-range formulas to set or ramp automation values across multiple bars in one step without drawing. If a formula contains an error, a red message appears inside the dialog and nothing is applied until all lines are valid.
+
+```
+Volume:1-8=0>100, 9-24=100, 25-32=100>0
+Modulation:1-32=0>80
+Filter Sweep:1-16=100>20
+```
+
+> See **[docs/AutomationFormula.md](AutomationFormula.md)** for the full syntax reference including ramps, named parameters, renamed labels, and multiple parameters at once.
 
 ---
 
-### 4d. Scale Filter
+### 5d. Scale Filter
 
 Set a **Scale Root** and **Scale Type** from the toolbar dropdowns. Toggle the **Filter** (eye) button to hide all notes outside the scale — remaining rows are highlighted, making it easy to stay in key.
 
@@ -288,20 +395,22 @@ The **Remap C Major to target scale** option in Track Properties transposes inco
 
 ---
 
-### 4e. Info Bar
+### 5e. Info Bar
 
 | Side | Content |
 |------|---------|
 | Left | Track type and loaded VST instrument name (dim text) |
 | Right | Hint text for the button or dropdown under the mouse (gold) |
 
+> See **[docs/ClipEditor.md](ClipEditor.md)** for the complete Piano Roll / Clip Editor reference — all toolbar buttons, note editing, automation lane, scale filter, drum kit mode, sampled instrument mode, keyboard shortcuts, and tips.
+
 ---
 
-## 5. Sample Editor
+## 6. Sample Editor
 
 Open by clicking a clip cell on a sample track, or by clicking a waveform thumbnail in an existing cell.
 
-### 5a. Toolbar
+### 6a. Toolbar
 
 **Left side — icon buttons:**
 
@@ -336,7 +445,7 @@ Open by clicking a clip cell on a sample track, or by clicking a waveform thumbn
 
 ---
 
-### 5b. Waveform View
+### 6b. Waveform View
 
 The waveform is displayed below the toolbar:
 
@@ -357,13 +466,13 @@ The waveform is displayed below the toolbar:
 
 ---
 
-### 5c. Selection & Editing
+### 6c. Selection & Editing
 
 Most edit operations act on the current selection. If no selection exists, the operation acts on the entire audio file. After each edit, the waveform reloads automatically and peaks are recalculated. The undo/redo stack is per-session and clears when a new file is loaded.
 
 ---
 
-### 5d. BPM Detection & Stretch
+### 6d. BPM Detection & Stretch
 
 Click the **BPM** button to open the BPM dialog. GrooviXBeat shows:
 - Detected BPM (from filename, ACID metadata, or DSP analysis)
@@ -375,7 +484,7 @@ Click **Stretch to project BPM** to WSOLA time-stretch the audio to the project 
 
 ---
 
-### 5e. Info Bar
+### 6e. Info Bar
 
 | Side | Content |
 |------|---------|
@@ -384,21 +493,95 @@ Click **Stretch to project BPM** to WSOLA time-stretch the audio to the project 
 
 ---
 
-## 6. Generator
+## 7. Note Generator
 
-Click the **Generate** button (import-wizard icon) in the Piano Roll toolbar to open the Generator. It can produce:
-
-| Mode | Description |
-|------|-------------|
-| **Chords** | Choose a root, quality, and voicing to insert a chord. |
-| **Arpeggios** | Generate arpeggiated patterns from a chord selection. |
-| **Melody** | Algorithmic melody generation based on scale and rhythm parameters. |
-
-Generated notes are inserted into the current clip at the playhead position and can be edited normally in the Piano Roll.
+Click the **Generate** button in the Piano Roll toolbar to open the Note Generator. It has four tabs:
 
 ---
 
-## 7. FX Chain Editor
+### 7a. Chord / Arp Tab
+
+Build chord progressions and arpeggios from a palette of scale degrees.
+
+| Control | Description |
+|---------|-------------|
+| **Root Key** | Root note of the key (C – B). |
+| **Scale** | Scale type used to derive chord notes (Major, Minor, Dorian, etc.). |
+| **Chord Type** | Voicing quality: triad, maj7, min7, dom7, sus4, etc. |
+| **Arp Pattern** | Arpeggio direction / order: Up, Down, Up-Down, Random, etc. |
+| **Chord Oct.** | Octave for the chord block. |
+| **Note Duration** | Length of each note: 1/16, 1/8, 1/4, 1/2, 1 bar. |
+| **Repeat** | How many times the full chord sequence is repeated. |
+| **Chord block** | Toggle: include a simultaneous chord block in the output. |
+| **Arpeggio** | Toggle: include an arpeggiated pattern in the output. |
+
+**Chord Sequence palette**
+Click the Roman numeral buttons (I – VII) to append scale degrees to your progression. Each click adds one chord to the sequence strip. Click the **×** on any chip in the strip to remove it. Click **Clear** to reset the sequence.
+
+Click **Insert into Clip** to write the generated notes to the current clip.
+
+---
+
+### 7b. Drum Patterns Tab
+
+Choose from a built-in library of drum patterns organised by genre and style.
+
+| Column | Description |
+|--------|-------------|
+| **Pattern** (left list) | Genre family: Rock, Hip-Hop, Electronic, Jazz, Latin, etc. |
+| **Style** (right list) | Named variation within the family. |
+
+Select a family row, then select a style. Click **Insert into Clip** to write the drum pattern to the current clip. The pattern tiles to fill the clip length.
+
+---
+
+### 7c. Bass Lines Tab
+
+Choose from a built-in library of bass patterns organised by genre and style. Each pattern defines up to 16 steps of interval, velocity, and duration data relative to a root note.
+
+| Control | Description |
+|---------|-------------|
+| **Pattern** (left list) | Genre family: Galloping, Walking, Funk Slap, Reggae, House, etc. |
+| **Style** (right list) | Named variation (e.g. Standard, Root+Fifth, Approach Note). |
+| **Root** | Root note for the bass line (C – B). |
+| **Oct.** | Octave for the root note (1 – 4). |
+
+The pattern description is shown below the style list. Click **Insert into Clip** to write the bass line to the current clip. The pattern tiles to fill the clip length.
+
+---
+
+### 7d. Formula Tab
+
+Enter notes and automation directly as text using a compact bar/step notation. Positions are written as `Bar.Step` where step is a 1/16th note number (1–16). This is the fastest way to enter specific melodies, chord voicings, or note sequences from scratch.
+
+```
+Start.Step-End.Step=Note [param=value ...]
+```
+
+**Examples:**
+```
+1.1-2.1=C4 vel=90          # whole note, bar 1
+1.1-1.5=C4                 # quarter note (steps 1-4)
+1.5-1.9=E4                 # quarter note on beat 2
+2.1-3.1=E4+G4 vel=85
+3.1-5.1=F3+A3+C4 vel=95 mod=0>80
+4.1-5.1=G3 vel=100 pitch=50>52
+```
+
+- **Positions**: `Bar.Step` — step 1–16 per bar, where step 5 = beat 2, step 9 = beat 3, step 13 = beat 4
+- **Notes**: letter names (`C4`, `Bb3`, `D#5`) or plain MIDI numbers (`60`)
+- **Chords**: stack notes with `+` (`C4+E4+G4`)
+- **Velocity**: `vel=0–127`
+- **Automation ramps**: `vol=0>100`, `mod=20>80`, `pitch=48>52`, `pan=50`
+- **Comments**: `# text`
+
+If a line contains an error, a red message appears below the text box and nothing is inserted until all lines are valid.
+
+> See **[docs/NoteFormula.md](NoteFormula.md)** for the full syntax reference including bar/step notation, all parameter names, chord syntax, and complete examples.
+
+---
+
+## 8. FX Chain Editor
 
 Right-click a track header and choose **FX Chain** to open the FX Chain Editor.
 
@@ -406,27 +589,27 @@ Add VST3 effect plugins (compressors, reverbs, EQs, etc.) in series for that tra
 
 ---
 
-## 8. VST3 Plugins
+## 9. VST3 Plugins
 
 **Instruments**
 Assigned per track via Track Properties → VST Instrument. The search box filters by name or manufacturer. Click **VST UI** to open the plugin's graphical editor.
 
 **Effects**
-Added per track via the FX Chain Editor (see [Section 7](#7-fx-chain-editor)).
+Added per track via the FX Chain Editor (see [Section 8](#8-fx-chain-editor)).
 
 **Plugin Scanning**
 GrooviXBeat scans for installed VST3 plugins on startup. Plugins must be installed in the standard VST3 folder for your system.
 
 **Automation**
-VST parameters can be automated per note in the Piano Roll automation lane. Select the parameter from the dropdown in the automation lane.
+VST parameters can be automated per clip in the Piano Roll automation lane. Select the parameter from the dropdown in the automation lane. Parameters can be renamed with the **Ren** button and referenced by their custom name in the Automation Formula dialog.
 
 ---
 
-## 9. Project Management
+## 10. Project Management
 
 | Action | How |
 |--------|-----|
-| **Save** | File → Save or **Ctrl+S**. Saves all clip data, MIDI notes, mixer settings, sample edits, plugin assignments, and scene/track layout. |
+| **Save** | File → Save or **Ctrl+S**. Saves all clip data, MIDI notes, mixer settings, sample edits, plugin assignments, scene/track layout, and arrangement timeline. |
 | **Load** | File → Open or **Ctrl+O**. Restores the complete session including all plugin states. |
 | **New** | File → New. Clears all data and resets to the default layout. |
 
@@ -435,7 +618,7 @@ When you drop or load audio files, GrooviXBeat copies them into the project's sa
 
 ---
 
-## 10. Tips & Keyboard Shortcuts
+## 11. Tips & Keyboard Shortcuts
 
 ### Transport
 
@@ -477,3 +660,24 @@ When you drop or load audio files, GrooviXBeat copies them into the project's sa
 | Dim | Idle |
 | Yellow | Loading a file |
 | Red | Processing multiple files (hourglass cursor shown) |
+
+### Arrangement Tips
+
+- Use the **Arrangement Wizard** to lay out a complete song structure in seconds — type one line per track, then click Apply.
+- Track and scene names in wizard formulas are matched case-insensitively; you can also use `T1`/`S1` shortcuts or plain numbers.
+- Clip labels (set with the **Label** button on a clip cell) can be used as scene names in wizard formulas, making it easy to reference specific clip variants by name.
+- Section markers created with the **Label** toolbar button appear during both editing and playback, giving you a visual map of the song structure.
+
+---
+
+## Reference Documents
+
+| Topic | Document |
+|-------|----------|
+| Live Performance & Arrangement View (full reference) | [docs/ArrangementView.md](ArrangementView.md) |
+| Piano Roll / Clip Editor (full reference) | [docs/ClipEditor.md](ClipEditor.md) |
+| Sample Editor (full reference) | [docs/SampleEditor.md](SampleEditor.md) |
+| Automation Formula syntax | [docs/AutomationFormula.md](AutomationFormula.md) |
+| Note Formula syntax (Generator) | [docs/NoteFormula.md](NoteFormula.md) |
+| Arrangement Wizard formula syntax | [docs/ArrangementFormula.md](ArrangementFormula.md) |
+| Sidechain setup | [docs/SideChain.md](SideChain.md) |
