@@ -11,7 +11,7 @@ Switch between modes using the **PERF | ARR** toggle at the left of the toolbar.
 
 ## Layout Overview
 
-![A mushroom-head robot drinking bubble tea](GroovixBeat_01.png)
+![Performance Mode](GroovixBeat_01.png)
 
 ```
 +--------------------------------------------------------------+
@@ -33,6 +33,8 @@ Switch between modes using the **PERF | ARR** toggle at the left of the toolbar.
 ```
 
 In **Arrangement Mode** the grid is replaced by a horizontal time axis:
+
+![Arrangement Mode](GroovixBeat_02.png)
 
 ```
 +------+------- Time ruler (bar numbers, beat ticks) ----------+
