@@ -23,15 +23,13 @@ TrackName: token1, token2, token3, ...
 
 ### Token Formats
 
-There are two ways to write each token:
-
-#### Explicit — fixed start bar
+#### Explicit — fixed start bar, length
 
 ```
-StartBar-DurationBars=SceneName
+StartBar+DurationBars=SceneName
 ```
 
-Places the scene clip starting at `StartBar` for `DurationBars` bars, regardless of where the previous token ended.
+Places the scene clip starting at `StartBar` for `DurationBars` bars.
 
 | Part | Description |
 |---|---|
@@ -39,13 +37,31 @@ Places the scene clip starting at `StartBar` for `DurationBars` bars, regardless
 | `DurationBars` | How many bars the slot occupies |
 | `SceneName` | Which scene's clip to place (see Scene Names below) |
 
+#### Explicit — bar range
+
+```
+StartBar-EndBar=SceneName
+```
+
+Places the scene clip from `StartBar` up to (but not including) `EndBar`. Duration = `EndBar - StartBar` bars.
+
+| Part | Description |
+|---|---|
+| `StartBar` | Bar number where the clip slot begins (1-based) |
+| `EndBar` | First bar **after** the slot (end-exclusive) |
+| `SceneName` | Which scene's clip to place |
+
+`4-8=SceneB` and `4+4=SceneB` are identical — both place 4 bars of SceneB starting at bar 4.
+
 #### Chain — follows the previous token
 
 ```
-DurationBars=SceneName
++DurationBars=SceneName
 ```
 
 Places the scene clip immediately after the end of the previous token on the same line. The first chain token on a line starts at **bar 1** if no explicit token has appeared before it.
+
+The `+` prefix is what marks a token as a continuation — it reads naturally as "and then for N bars."
 
 ---
 
@@ -95,8 +111,8 @@ Each token defines a *slot* — a start bar and a duration in bars. The wizard f
 Use one line per track. All lines are applied together when you click Apply.
 
 ```
-T1: 1-8=Intro, 8=Verse, 8=Chorus
-T2: 1-8=Intro, 16=Verse, 32-8=Bridge
+T1: 1+8=Intro, +8=Verse, +8=Chorus
+T2: 1+8=Intro, +16=Verse, 32+8=Bridge
 ```
 
 ---
@@ -107,9 +123,9 @@ Lines starting with `#` are ignored. Use them to annotate your formula.
 
 ```
 # Full arrangement draft
-T1: 1-8=Intro, 8=Verse, 8=Verse, 8=Chorus, 8=Outro
-T2: 1-8=Intro, 8=Verse, 16=Chorus, 8=Outro
-# T3: placeholder — add drums later
+T1: 1+8=Intro, +8=Verse, +8=Verse, +8=Chorus, +8=Outro
+T2: 1+8=Intro, +8=Verse, +16=Chorus, +8=Outro
+# T3: placeholder -- add drums later
 ```
 
 Blank lines are also ignored.
@@ -135,11 +151,11 @@ Fix the highlighted names and click Apply again.
 
 ### Example 1 — Simple two-track layout
 
-Two tracks, each with Intro, Verse, and Chorus, using 8-bar slots chained together:
+Two tracks, each with Intro, Verse, and Chorus, chained together:
 
 ```
-T1: 1-8=Intro, 8=Verse, 8=Chorus
-T2: 1-8=Intro, 8=Verse, 8=Chorus
+T1: 1+8=Intro, +8=Verse, +8=Chorus
+T2: 1+8=Intro, +8=Verse, +8=Chorus
 ```
 
 ---
@@ -147,9 +163,9 @@ T2: 1-8=Intro, 8=Verse, 8=Chorus
 ### Example 2 — Different section lengths per track
 
 ```
-Lead:  1-4=Intro, 8=Verse, 16=Chorus, 4=Outro
-Bass:  1-4=Intro, 8=Verse, 16=Chorus, 4=Outro
-Drums: 1-8=Intro, 8=Verse, 16=Chorus, 8=Outro
+Lead:  1+4=Intro, +8=Verse, +16=Chorus, +4=Outro
+Bass:  1+4=Intro, +8=Verse, +16=Chorus, +4=Outro
+Drums: 1+8=Intro, +8=Verse, +16=Chorus, +8=Outro
 ```
 
 ---
@@ -159,8 +175,8 @@ Drums: 1-8=Intro, 8=Verse, 16=Chorus, 8=Outro
 Place clips at fixed bar positions regardless of chaining:
 
 ```
-T1: 1-8=Intro, 17-8=Bridge, 33-8=Outro
-T2: 1-8=Intro, 17-8=Bridge, 33-8=Outro
+T1: 1+8=Intro, 17+8=Bridge, 33+8=Outro
+T2: 1+8=Intro, 17+8=Bridge, 33+8=Outro
 ```
 
 Bars 9–16 are left empty on both tracks.
@@ -172,7 +188,7 @@ Bars 9–16 are left empty on both tracks.
 Start explicitly at bar 1, then chain the rest:
 
 ```
-T1: 1-8=Intro, 8=Verse, 8=Verse, 8=Chorus, 4=Outro
+T1: 1+8=Intro, +8=Verse, +8=Verse, +8=Chorus, +4=Outro
 ```
 
 This places:
@@ -189,8 +205,8 @@ This places:
 If your scene rows are named "Intro", "Verse", "Chorus", and "Bridge":
 
 ```
-Track1: 1-8=Intro, 8=Verse, 8=Chorus, 8=Bridge, 8=Chorus
-Track2: 1-8=Intro, 16=Verse, 8=Chorus, 8=Outro
+Track1: 1+8=Intro, +8=Verse, +8=Chorus, +8=Bridge, +8=Chorus
+Track2: 1+8=Intro, +16=Verse, +8=Chorus, +8=Outro
 ```
 
 ---
@@ -200,7 +216,7 @@ Track2: 1-8=Intro, 16=Verse, 8=Chorus, 8=Outro
 If the clips on Track 1 in each scene have been labelled "A", "B", "C":
 
 ```
-T1: 1-8=A, 8=B, 8=C, 8=B, 8=A
+T1: 1+8=A, +8=B, +8=C, +8=B, +8=A
 ```
 
 The wizard matches the label against that specific track's clips, so labels unique to T1 won't clash with same-named labels on other tracks.
@@ -211,12 +227,12 @@ The wizard matches the label against that specific track's clips, so labels uniq
 
 ```
 # 32-bar arrangement: Intro 8, Verse 8, Chorus 8, Outro 8
-Lead:  1-8=Intro, 8=Verse, 8=Chorus, 8=Outro
-Bass:  1-8=Intro, 8=Verse, 8=Chorus, 8=Outro
-Drums: 1-8=Intro, 8=Verse, 8=Chorus, 8=Outro
-Keys:  1-8=Intro, 16=Chorus, 8=Outro
+Lead:  1+8=Intro, +8=Verse, +8=Chorus, +8=Outro
+Bass:  1+8=Intro, +8=Verse, +8=Chorus, +8=Outro
+Drums: 1+8=Intro, +8=Verse, +8=Chorus, +8=Outro
+Keys:  1+8=Intro, +16=Chorus, +8=Outro
 # Pad only plays on Chorus and Outro
-Pad:   17-8=Chorus, 8=Outro
+Pad:   17+8=Chorus, +8=Outro
 ```
 
 ---
@@ -225,30 +241,33 @@ Pad:   17-8=Chorus, 8=Outro
 
 ```
 # Explicit token (fixed bar, fixed duration)
-T1: 1-8=Intro
+T1: 1+8=Intro
 
 # Chain token (follows previous, or starts at bar 1)
-T1: 8=Verse
+T1: +8=Verse
 
 # Combined on one line
-T1: 1-8=Intro, 8=Verse, 8=Chorus
+T1: 1+8=Intro, +8=Verse, +8=Chorus
 
 # Multiple tracks
-T1: 1-8=Intro, 8=Verse
-T2: 1-8=Intro, 8=Verse
+T1: 1+8=Intro, +8=Verse
+T2: 1+8=Intro, +8=Verse
 
 # Scene by shortcut
-T1: 1-8=S1, 8=S2
+T1: 1+8=S1, +8=S2
 
 # Track by shortcut
-T1: 1-8=Intro
-Track1: 1-8=Intro    # same track, both forms work
+T1: 1+8=Intro
+Track1: 1+8=Intro    # same track, both forms work
 
 # Named scene
-T1: 1-8=Intro, 8=Verse, 8=Chorus, 8=Outro
+T1: 1+8=Intro, +8=Verse, +8=Chorus, +8=Outro
 
 # Clip label as scene name
-T1: 1-8=Riff A, 8=Riff B
+T1: 1+8=Riff A, +8=Riff B
+
+# Jump to explicit bar mid-line, then chain again
+T1: 1+4=Intro, 17+8=Bridge, +8=Outro
 
 # Comment
 # this line is ignored
@@ -265,4 +284,5 @@ T1: 1-8=Riff A, 8=Riff B
 - **Partial fills** — if a slot duration is not a multiple of the source clip's length, the last instance is trimmed to fit exactly.
 - **Track and scene names** are matched case-insensitively.
 - **Clip labels** (set with the Label button in the grid) can be used as scene names. When the track is known, only that track's labels are searched first; the label check then falls back to all tracks.
+- **Chain tokens reset per line** — `nextBarStart` starts fresh at bar 1 for each line, so lines are independent.
 - **Nothing is placed if any error exists** — the entire formula is validated before any clip is written to the timeline.

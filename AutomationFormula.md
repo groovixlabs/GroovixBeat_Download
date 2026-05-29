@@ -19,20 +19,25 @@ The **Fn** button in the automation lane gives you a fast way to set automation 
 
 ### Flat Value
 
-Sets a constant value across a range of bars.
+Sets a constant value across a range of bars. Two equivalent notations are accepted:
 
 ```
-BARSTART-BAREND=VALUE
+BARSTART+LENGTH=VALUE
+BARSTART-ENDBAR=VALUE
 ```
 
 | Part | Description |
 |---|---|
 | `BARSTART` | First bar of the range (1-based) |
-| `BAREND` | Last bar of the range (inclusive) |
+| `LENGTH` | Number of bars to cover (`+` form) |
+| `ENDBAR` | Last bar of the range, inclusive (`-` form) |
 | `VALUE` | Target value as a percentage: **0** (minimum) to **100** (maximum) |
 
-**Example — set bars 1 to 8 at full volume:**
+`1+8=100` and `1-8=100` are identical — both cover bars 1 through 8.
+
+**Example — set 8 bars starting at bar 1 to full volume:**
 ```
+1+8=100
 1-8=100
 ```
 
@@ -43,7 +48,8 @@ BARSTART-BAREND=VALUE
 Linearly fades from one value to another across a range of bars.
 
 ```
-BARSTART-BAREND=FROM>TO
+BARSTART+LENGTH=FROM>TO
+BARSTART-ENDBAR=FROM>TO
 ```
 
 | Part | Description |
@@ -51,15 +57,41 @@ BARSTART-BAREND=FROM>TO
 | `FROM` | Value at the start of the range (0–100) |
 | `TO` | Value at the end of the range (0–100) |
 
-**Example — fade out from bar 9 to bar 16:**
+**Example — fade out over 8 bars starting at bar 9:**
 ```
+9+8=100>0
 9-16=100>0
 ```
 
-**Example — fade in from bar 1 to bar 8:**
+**Example — fade in over 8 bars starting at bar 1:**
 ```
+1+8=0>100
 1-8=0>100
 ```
+
+---
+
+### Continuation Token
+
+When a token starts with `+` and has no leading bar number, it continues from where the previous range on the same line ended.
+
+```
+BARSTART+LENGTH=VALUE, +LENGTH2=VALUE2, +LENGTH3=VALUE3
+```
+
+The cursor advances automatically after each token — you only need to specify the starting bar once.
+
+**Example — flat then fade out, 4 bars each:**
+```
+1+4=100, +4=100>0
+```
+
+**Example — three consecutive segments:**
+```
+1+4=100>50, +4=50>0, +8=0
+```
+
+Continuation resets at the start of each line, so each line is independent.
 
 ---
 
@@ -68,8 +100,8 @@ BARSTART-BAREND=FROM>TO
 To write automation for a specific parameter, prefix the line with the parameter name followed by a colon.
 
 ```
-ParamName:BARSTART-BAREND=VALUE
-ParamName:BARSTART-BAREND=FROM>TO
+ParamName:BARSTART+LENGTH=VALUE
+ParamName:BARSTART+LENGTH=FROM>TO
 ```
 
 If no prefix is given, the **currently selected parameter** in the automation lane is used.
@@ -91,8 +123,8 @@ If you have renamed an automation parameter using the **Ren** button, you can us
 
 **Example:** if you renamed parameter 1 from "Volume" to "Lead Vol":
 ```
-Lead Vol:1-8=0>100
-Lead Vol:9-16=100>0
+Lead Vol:1+8=0>100
+Lead Vol:9+8=100>0
 ```
 
 If a prefix is not recognised (not a built-in name, not a VST parameter, and not a renamed label), an error is shown and nothing is applied.
@@ -101,7 +133,7 @@ If a prefix is not recognised (not a built-in name, not a VST parameter, and not
 
 ### Multiple Ranges on One Line
 
-Separate multiple ranges with commas. They all apply to the same parameter prefix on that line.
+Separate multiple ranges with commas. They all apply to the same parameter prefix on that line. Continuation tokens (`+LENGTH=VALUE`) are resolved left to right.
 
 ```
 ParamName:RANGE1, RANGE2, RANGE3
@@ -114,9 +146,9 @@ ParamName:RANGE1, RANGE2, RANGE3
 Use a separate line for each parameter. The dialog applies all lines when you click Apply.
 
 ```
-Volume:1-8=100, 9-16=100>0
-Pan:1-16=50
-Modulation:1-8=0>100, 9-16=100>0
+Volume:1+8=100, +8=100>0
+Pan:1+16=50
+Modulation:1+8=0>100, +8=100>0
 ```
 
 ---
@@ -130,7 +162,7 @@ If any line contains a mistake, a **red error message** appears inside the dialo
 | Error message | Likely cause |
 |---|---|
 | `Unrecognised parameter: X` | The prefix before `:` is not a built-in name, a VST parameter name, or a renamed label |
-| `Missing '='` | A range is malformed — check the `BARSTART-BAREND=VALUE` format |
+| `Missing '='` | A range is malformed — check the `BARSTART+LENGTH=VALUE` format |
 | Invalid value | A value after `=` is not a number or a valid `FROM>TO` ramp |
 
 Fix the highlighted line and click Apply again.
@@ -141,9 +173,9 @@ Fix the highlighted line and click Apply again.
 
 ### Example 1 — Simple flat volume
 
-Set bars 1–16 to full volume on the currently selected parameter:
+Set 16 bars to full volume on the currently selected parameter:
 ```
-1-16=100
+1+16=100
 ```
 
 ---
@@ -152,13 +184,13 @@ Set bars 1–16 to full volume on the currently selected parameter:
 
 Volume at full for bars 1–8, then fade to silence over bars 9–16:
 ```
-Volume:1-8=100
-Volume:9-16=100>0
+Volume:1+8=100
+Volume:9+8=100>0
 ```
 
-Or on one line:
+Or on one line using continuation:
 ```
-Volume:1-8=100, 9-16=100>0
+Volume:1+8=100, +8=100>0
 ```
 
 ---
@@ -166,7 +198,7 @@ Volume:1-8=100, 9-16=100>0
 ### Example 3 — Fade in, sustain, fade out (32-bar clip)
 
 ```
-Volume:1-8=0>100, 9-24=100, 25-32=100>0
+Volume:1+8=0>100, +16=100, +8=100>0
 ```
 
 ---
@@ -174,9 +206,9 @@ Volume:1-8=0>100, 9-24=100, 25-32=100>0
 ### Example 4 — Multiple parameters in one session
 
 ```
-Volume:1-8=0>100, 9-24=100, 25-32=100>0
-Pan:1-16=50, 17-32=50
-Modulation:1-32=0>80
+Volume:1+8=0>100, +16=100, +8=100>0
+Pan:1+32=50
+Modulation:1+32=0>80
 ```
 
 ---
@@ -185,7 +217,7 @@ Modulation:1-32=0>80
 
 If your VST exposes a parameter called "Cutoff":
 ```
-Cutoff:1-8=100>30, 9-16=30>100
+Cutoff:1+8=100>30, +8=30>100
 ```
 
 ---
@@ -194,7 +226,7 @@ Cutoff:1-8=100>30, 9-16=30>100
 
 If you renamed parameter 2 (Pan) to "Width" using the Ren button:
 ```
-Width:1-8=50, 9-16=50>80, 17-32=80>50
+Width:1+8=50, +8=50>80, +16=80>50
 ```
 
 ---
@@ -215,27 +247,30 @@ Width:1-8=50, 9-16=50>80, 17-32=80>50
 
 ```
 # Flat
-1-8=100                        set bars 1-8 to 100%
+1+8=100                        set 8 bars from bar 1 to 100%
 
 # Ramp
-9-16=100>0                     fade from 100% to 0% over bars 9-16
+9+8=100>0                      fade from 100% to 0% over 8 bars from bar 9
+
+# Continuation (no leading bar number)
+1+4=100, +4=100>0              bars 1-4 at 100%, bars 5-8 fade to 0%
 
 # Named parameter (built-in)
-Volume:1-8=100                 set Volume, bars 1-8
+Volume:1+8=100                 set Volume, 8 bars from bar 1
 
 # Named parameter (renamed label)
-Lead Vol:1-8=0>100             use custom name set with Ren button
+Lead Vol:1+8=0>100             use custom name set with Ren button
 
-# Multiple ranges, one parameter
-Volume:1-8=0>100, 9-24=100, 25-32=100>0
+# Multiple ranges with continuation
+Volume:1+8=0>100, +16=100, +8=100>0
 
 # Multiple parameters, multiple lines
-Volume:1-32=100
-Pan:1-16=50
-Modulation:1-8=0>100
+Volume:1+32=100
+Pan:1+16=50
+Modulation:1+8=0>100
 
 # VST parameter by display name
-Cutoff:1-8=100>30
+Cutoff:1+8=100>30, +8=30>100
 
 # Comment line (ignored)
 # this line is ignored
