@@ -95,6 +95,48 @@ Continuation resets at the start of each line, so each line is independent.
 
 ---
 
+### Bare Value (Repeat Last Length)
+
+When a token contains only a value with no position prefix at all, the parser reuses the length from the most recent `+N` token on the same line. This lets you write repetitive step sequences compactly.
+
+```
+BARSTART+LENGTH=VALUE, VALUE2, VALUE3, VALUE4
+```
+
+The bare values `VALUE2`, `VALUE3`, `VALUE4` each inherit `LENGTH` from the first token and continue sequentially.
+
+Bare values support both flat values and ramps:
+
+| Token | Meaning |
+|---|---|
+| `100` | Flat value at 100% for the inherited length |
+| `0` | Flat value at 0% |
+| `0>100` | Ramp from 0% to 100% over the inherited length |
+
+**Example — six 4-bar segments written compactly:**
+```
+Drums:+4=0, 0, 100, 100, 100, 0
+```
+
+This is identical to:
+```
+Drums:+4=0, +4=0, +4=100, +4=100, +4=100, +4=0
+```
+
+**Example — step sequence with ramps:**
+```
+Volume:+2=0>100, 100, 100>0, 0
+```
+
+Expands to four 2-bar segments: fade in, hold, fade out, silence.
+
+**Notes:**
+- The bare-value shorthand only works after at least one `+N=` token on the same line has established the length.
+- The length is also inherited from `BARSTART+N=` and `BARSTART-ENDBAR=` tokens (the equivalent bar count is remembered).
+- A bare value with no preceding length token is ignored.
+
+---
+
 ### Parameter Prefix
 
 To write automation for a specific parameter, prefix the line with the parameter name followed by a colon.
@@ -133,7 +175,7 @@ If a prefix is not recognised (not a built-in name, not a VST parameter, and not
 
 ### Multiple Ranges on One Line
 
-Separate multiple ranges with commas. They all apply to the same parameter prefix on that line. Continuation tokens (`+LENGTH=VALUE`) are resolved left to right.
+Separate multiple ranges with commas. They all apply to the same parameter prefix on that line. Continuation and bare-value tokens are resolved left to right.
 
 ```
 ParamName:RANGE1, RANGE2, RANGE3
@@ -231,6 +273,27 @@ Width:1+8=50, +8=50>80, +16=80>50
 
 ---
 
+### Example 7 — Drum velocity pattern using bare values
+
+Set a 16-step velocity pattern in 1-bar segments, 8 bars total:
+```
+Drums:+1=100, 50, 80, 50, 100, 50, 80, 50, 100, 50, 80, 50, 100, 50, 80, 50
+```
+
+Each bare value inherits the 1-bar length from the leading `+1=100`.
+
+---
+
+### Example 8 — Gate pattern with bare values and ramps
+
+```
+Volume:+4=100, 0, 100, 0, 100>0, 0, 0>100, 100
+```
+
+Eight 4-bar segments: on, off, on, off, fade-out, silent, fade-in, on.
+
+---
+
 ## Notes
 
 - **Applying a formula replaces** any existing automation breakpoints in the specified bar range. Points outside the range are untouched.
@@ -238,6 +301,7 @@ Width:1+8=50, +8=50>80, +16=80>50
 - **Bars beyond the clip length** are silently clamped to the last step of the clip.
 - **Unrecognised parameter prefixes cause an error** — the dialog stays open and nothing is applied.
 - **Renamed labels** set with the **Ren** button are matched case-insensitively and work everywhere a built-in name works.
+- **Bare values** (no `+N=` prefix) reuse the last stated bar length. They are ignored if no length has been established yet on the same line.
 - Lines starting with `#` are treated as comments and ignored.
 - The dialog can be re-opened and formulas re-applied at any time; each apply is additive on top of whatever is currently in the lane outside the specified ranges.
 
@@ -255,14 +319,19 @@ Width:1+8=50, +8=50>80, +16=80>50
 # Continuation (no leading bar number)
 1+4=100, +4=100>0              bars 1-4 at 100%, bars 5-8 fade to 0%
 
+# Bare value (reuse last length)
++4=100, 0, 100, 0              four 4-bar segments: 100, 0, 100, 0
++4=100>0, 0, 0>100, 100        with ramps mixed in
+
 # Named parameter (built-in)
 Volume:1+8=100                 set Volume, 8 bars from bar 1
 
 # Named parameter (renamed label)
 Lead Vol:1+8=0>100             use custom name set with Ren button
 
-# Multiple ranges with continuation
+# Multiple ranges with continuation and bare values
 Volume:1+8=0>100, +16=100, +8=100>0
+Drums:+4=0, 0, 100, 100, 100, 0
 
 # Multiple parameters, multiple lines
 Volume:1+32=100

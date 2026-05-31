@@ -12,18 +12,19 @@ The **Formula** tab in the **Note Generator** lets you type notes directly using
 4. Type your formulas in the text box.
 5. Click **Insert into Clip**.
 
-Notes and automation are appended to the clip (they do not erase existing content).
+Inserting replaces any existing notes that overlap the specified ranges. Notes outside those ranges are untouched.
 
 ---
 
 ## Formula Syntax
 
-Each line describes one note event (or chord) and optional automation ramps. Three position formats are supported:
+Each line describes one or more note events separated by commas. Multiple lines are also supported — commas and newlines are interchangeable as note separators. Four token formats are recognised:
 
 ```
 Start.Step - End.Step  = Note [param=value ...]   (explicit range)
 Start.Step + N         = Note [param=value ...]   (start + step count)
-           + N         = Note [param=value ...]   (continuation from previous note's end)
+           + N         = Note [param=value ...]   (continuation)
+                 Note [param=value ...]            (bare note — reuse last step count)
 ```
 
 | Part | Description |
@@ -36,24 +37,33 @@ Start.Step + N         = Note [param=value ...]   (start + step count)
 
 ---
 
-## Line Continuity
+## Separators — Commas and Newlines
 
-**Lines are treated as a continuous sequence.** The continuation cursor advances to the end of each note and carries over to the next line. This means you can split a phrase across lines for readability — blank lines and comment-only lines are ignored and do not break continuity.
+**Commas and newlines are interchangeable note separators.** The continuation cursor advances after every note token and carries over regardless of whether tokens are split by commas or line breaks. Blank lines and comment-only lines are ignored.
 
-An explicit `Start.Step` always resets the cursor to that position and then advances it to `Start.Step + duration` for the next line.
+An explicit `Start.Step` always resets the cursor to that position.
+
+All four of the following are identical:
 
 ```
-# These two phrases produce exactly the same result:
+# All commas on one line
+1.1+4=C4, +4=D4, +4=E4, +4=F4
 
-# Written as one phrase:
-1.1+4=C4  1.5+4=D4  1.9+4=E4  1.13+4=F4
+# Commas with bare notes
+1.1+4=C4, D4, E4, F4
 
-# Written across lines for readability:
+# One per line
 1.1+4=C4
 +4=D4
 +4=E4
 +4=F4
+
+# Mixed — split for visual grouping
+1.1+4=C4, D4
+E4, F4
 ```
+
+`#` comments strip the rest of the **line** (not just up to the next comma), so a comment silences all tokens that follow it on the same line.
 
 ---
 
@@ -77,37 +87,26 @@ Positions are written as **Bar.Step**, where both bar and step are **1-based**.
 - 4 steps = 1 beat (quarter note)
 - 16 steps = 1 bar
 
-**Beat landmarks (4/4 reference):**
-
-| Beat | Step notation |
-|---|---|
-| Beat 1 | `B.1` |
-| Beat 2 | `B.5` |
-| Beat 3 | `B.9` |
-| Beat 4 | `B.13` |
-
 ---
 
 ## Position Formats
 
 ### Range: `Start.Step - End.Step`
 
-The note plays from the start position up to (but not including) the end position. Duration = end step − start step.
+The note plays from the start position up to (but not including) the end position.
 
 ```
 1.1-2.1=C4        # whole note — 16 steps
 1.1-1.5=C4        # quarter note — 4 steps
-2.5-2.9=G4        # quarter note starting on beat 2 of bar 2
 ```
 
 ### Start + Count: `Start.Step + N`
 
-The note starts at the given position and lasts exactly N steps. Equivalent to writing `Start.Step - (Start + N steps)`.
+The note starts at the given position and lasts exactly N steps.
 
 ```
-1.1+16=C4         # whole note (same as 1.1-2.1=C4)
+1.1+16=C4         # whole note
 1.1+4=C4          # quarter note
-2.5+4=G4          # quarter note on beat 2 of bar 2
 ```
 
 **Duration reference:**
@@ -125,23 +124,47 @@ The note starts at the given position and lasts exactly N steps. Equivalent to w
 
 ### Continuation: `+ N`
 
-The note starts exactly where the previous note ended and lasts N steps. No start position is needed.
+The note starts exactly where the previous note ended and lasts N steps.
 
 ```
-1.1+4=C4          # starts at step 0, ends at step 4
-+4=D4             # starts at step 4, ends at step 8
-+4=E4             # starts at step 8, ends at step 12
-+4=F4             # starts at step 12, ends at step 16
+1.1+4=C4          # step 0–4
++4=D4             # step 4–8
++4=E4             # step 8–12
++4=F4             # step 12–16
 ```
 
-The continuation cursor resets to 0 at the beginning of each Insert operation. An explicit `Start.Step` mid-sequence overrides the cursor for that line and all lines that follow.
+### Bare Note (Repeat Last Length)
+
+A line with **no position prefix and no `=`** reuses the step count from the most recent `+N` token and continues from where the previous note ended. The entire line is treated as the note and optional parameters.
 
 ```
-1.1+4=C4          # cursor -> step 4
-+4=D4             # cursor -> step 8
-3.1+4=G4          # explicit jump to bar 3 beat 1; cursor -> step 36
-+4=A4             # continues from step 36; cursor -> step 40
+1.1+4=C4          # establishes step count = 4
+D4                # same length, next position
+E4                # same length, next position
+F4                # same length, next position
 ```
+
+This is identical to writing `+4=` before each note:
+```
+1.1+4=C4
++4=D4
++4=E4
++4=F4
+```
+
+Bare notes work with chords, velocity, and automation parameters just like any other line:
+```
+1.1+4=C3+E3+G3 vel=90
+F3+A3+C4 vel=85
+G3+B3+D4 vel=100
+C3+E3+G3 vel=90
+```
+
+The bare note shorthand also works after `start-end` and `start+N` tokens — the equivalent step count is remembered in all cases.
+
+**Notes:**
+- A bare note with no preceding step count produces an error.
+- Velocity and automation parameters on bare note lines are separated by spaces after the note name, exactly as in the `=`-prefixed format.
 
 ---
 
@@ -177,26 +200,16 @@ Plain integers 0–127 are accepted in place of a note name.
 1.1+16=60         # C4 by MIDI number
 ```
 
-**Octave reference:**
-
-| Note | MIDI |
-|---|---|
-| C2 | 36 |
-| C3 | 48 |
-| C4 (middle C) | 60 |
-| C5 | 72 |
-| C6 | 84 |
-
 ---
 
 ## Chords
 
-Stack multiple notes on the same timing by separating note names with `+` (no spaces). The `+` inside the note part (after `=`) is always chord notation and is never confused with the `+` duration separator (which appears before `=`).
+Stack multiple notes on the same timing by separating note names with `+` (no spaces). The `+` inside the note part is always chord notation and is never confused with the `+` duration separator (which appears before `=`).
 
 ```
-1.1-2.1=C3+E3+G3          # C major triad, whole note
-1.1+16=C4+E4+G4+B4        # Cmaj7, whole note, count form
-+8=F3+A3+C4               # F major, continuation, half note
+1.1+16=C3+E3+G3        # C major triad, whole note
++8=F3+A3+C4            # F major, continuation, half note
+F3+A3+C4               # same as above, bare note form
 ```
 
 ---
@@ -207,7 +220,7 @@ Control note velocity with `vel=` (0–127, default 100). Applies to all notes i
 
 ```
 1.1+4=C4 vel=80
-2.1-3.1=G3+B3+D4 vel=110
+D4 vel=75              # bare note with velocity
 ```
 
 ---
@@ -222,20 +235,10 @@ Add optional automation ramps using named parameters after the note. Each parame
 param=VALUE
 ```
 
-`VALUE` is a percentage from 0 to 100.
-
-```
-1.1+16=C4 vol=80
-```
-
 ### Ramp
 
 ```
 param=FROM>TO
-```
-
-```
-1.1+32=C3 mod=0>100
 ```
 
 ### Recognised Parameters
@@ -251,18 +254,15 @@ param=FROM>TO
 
 ## Comments
 
-Any text after `#` on a line is ignored. Blank lines are also ignored and do not break the continuation cursor.
+Any text after `#` on a line is ignored, including any comma-separated tokens that follow on the same line. Blank lines are also ignored and do not break the continuation cursor.
 
 ```
-# Verse melody
-1.1+4=C4 vel=80      # root
-+4=E4 vel=75         # third — continues from step 4
-+4=G4 vel=85         # fifth — continues from step 8
+# Verse melody — quarter notes
+1.1+4=C4 vel=80, D4 vel=75, E4 vel=85   # three notes, one line
 
 # Bar 2 — new phrase (explicit reset)
 2.1+4=F4 vel=80
-+4=A4
-+4=C5
+A4, C5
 ```
 
 ---
@@ -275,8 +275,8 @@ If a line contains a mistake, a red error message appears below the text box and
 
 | Error message | Likely cause |
 |---|---|
-| `missing '='` | No `=` found on the line |
-| `expected start-end, start+steps, or +steps` | Position format not recognised |
+| `bare note has no preceding step count to inherit` | A bare note line appeared before any `+N` token established a length |
+| `expected start-end, start+steps, +steps, or bare note` | Position format not recognised |
 | `step count must be >= 1` | The N in `+N` is zero or missing |
 | `end must be after start` | End position is at or before start (range format) |
 | `missing note` | Nothing written after `=` |
@@ -288,54 +288,37 @@ If a line contains a mistake, a red error message appears below the text box and
 
 ## Complete Examples
 
-### Example 1 — C major scale, continuation style
+### Example 1 — C major scale, four ways
 
-**Quarter notes using continuation (most concise):**
+**Using continuation (`+N=`):**
+```
+1.1+4=C4, +4=D4, +4=E4, +4=F4, +4=G4, +4=A4, +4=B4, +4=C5
+```
+
+**Using bare notes, all on one line:**
+```
+1.1+4=C4, D4, E4, F4, G4, A4, B4, C5
+```
+
+**Bare notes across lines for readability:**
 ```
 1.1+4=C4
-+4=D4
-+4=E4
-+4=F4
-+4=G4
-+4=A4
-+4=B4
-+4=C5
+D4, E4, F4
+G4, A4, B4, C5
 ```
 
 **Eighth notes in one bar:**
 ```
-1.1+2=C4
-+2=D4
-+2=E4
-+2=F4
-+2=G4
-+2=A4
-+2=B4
-+2=C5
-```
-
-**16th note run, half bar:**
-```
-1.1+1=C4
-+1=D4
-+1=E4
-+1=F4
-+1=G4
-+1=A4
-+1=B4
-+1=C5
+1.1+2=C4, D4, E4, F4, G4, A4, B4, C5
 ```
 
 ---
 
-### Example 2 — Chord progression, count form
+### Example 2 — Chord progression, bare note style
 
 ```
-# I - IV - V - I in C major
-1.1+16=C3+E3+G3 vel=95
-+16=F3+A3+C4 vel=90
-+16=G3+B3+D4 vel=100
-+16=C3+E3+G3 vel=85
+# I - IV - V - I in C major, whole notes
+1.1+16=C3+E3+G3 vel=95, F3+A3+C4 vel=90, G3+B3+D4 vel=100, C3+E3+G3 vel=85
 ```
 
 ---
@@ -343,27 +326,25 @@ If a line contains a mistake, a red error message appears below the text box and
 ### Example 3 — Melody with modulation swell
 
 ```
-# Phrases split across lines for readability
-
 # Phrase 1
 1.1+8=C4 vel=80 mod=0>60
-+8=E4 vel=85 mod=60>100
+E4 vel=85 mod=60>100
 
 # Phrase 2 (explicit reset to bar 3)
 3.1+8=G4 vel=90 mod=100>40
-+8=C5 vel=95 mod=40>0
+C5 vel=95 mod=40>0
 ```
 
 ---
 
-### Example 4 — Mixing range and count notation
+### Example 4 — Mixing all four formats
 
 ```
-# Anchor with explicit positions, fill gaps with continuation
+# Anchor, then fill with bare notes
 1.1-2.1=C3 vel=110 pitch=50>52    # whole note, range form
 2.1+8=G2 vel=105                   # half note, count form
-+4=A2 vel=100                      # quarter note, continuation
-+4=F2 vel=105                      # quarter note, continuation
+A2 vel=100                         # bare: same 8-step length
+F2 vel=105                         # bare: continues
 ```
 
 ---
@@ -371,28 +352,24 @@ If a line contains a mistake, a red error message appears below the text box and
 ### Example 5 — Pad chord with long fade-in
 
 ```
-# Single long chord, volume and mod ramp
 1.1+64=C3+E3+G3+B3 vel=70 vol=0>100 mod=20>60
 ```
 
 ---
 
-### Example 6 — 16th-note bass riff with chord stabs
+### Example 6 — 16th-note bass riff using bare notes
 
 ```
-# Bass line (continuation)
-1.1+2=C2 vel=110
-+2=C2 vel=80
-+2=G2 vel=105
-+2=G2 vel=75
-+2=A2 vel=100
-+2=A2 vel=70
-+2=F2 vel=105
-+2=F2 vel=75
+# Compact: one line sets length, rest are bare values separated by commas
+1.1+2=C2 vel=110, C2 vel=80, G2 vel=105, G2 vel=75, A2 vel=100, A2 vel=70, F2 vel=105, F2 vel=75
+```
 
-# Chord stabs on beats 1 and 3 (explicit positions)
-1.1+4=C3+E3+G3 vel=90
-1.9+4=A2+C3+E3 vel=85
+Or split across lines for readability:
+```
+1.1+2=C2 vel=110, C2 vel=80
+G2 vel=105, G2 vel=75
+A2 vel=100, A2 vel=70
+F2 vel=105, F2 vel=75
 ```
 
 ---
@@ -400,42 +377,45 @@ If a line contains a mistake, a red error message appears below the text box and
 ## Quick Reference
 
 ```
-# Range form (start - end)
-1.1-2.1=C4                    whole note, bar 1
+# Range form
+1.1-2.1=C4                         whole note, bar 1
 
-# Count form (start + steps)
-1.1+16=C4                     whole note, bar 1 (same as above)
-1.1+4=C4                      quarter note
+# Count form
+1.1+16=C4                           whole note, bar 1
+1.1+4=C4                            quarter note
 
-# Continuation (no start — follows previous note)
-+4=D4                         quarter note from where last note ended
-+2=E4                         eighth note continuing on
+# Continuation
++4=D4                               quarter note, follows previous
 
-# Chord (+ inside note part, after =)
+# Bare note (reuse last step count, continue)
+D4                                  same length as previous +N, next position
+D4 vel=80                           bare note with velocity
+D3+F3+A3                            bare chord
+
+# Comma-separated on one line (equivalent to separate lines)
+1.1+4=C4, D4, E4, F4               four quarter notes
+1.1+4=C4, +4=D4, 3.1+4=G4, A4     mixed formats on one line
+
+# Chord
 1.1+16=C4+E4+G4
 
 # Velocity
 1.1+4=C4 vel=80
 
-# Automation flat
-1.1+16=C4 vol=75
-
-# Automation ramp
+# Automation
 1.1+32=C4 mod=0>100
-
-# Multiple params
 1.1+16=G3 vel=90 mod=0>80 pitch=50>55
 
-# MIDI number
-1.1+16=60
-
 # Explicit reset mid-sequence
-1.1+4=C4
-+4=D4
-3.1+4=G4                      jumps to bar 3 -- resets cursor
-+4=A4                         continues from bar 3 beat 2
+1.1+4=C4, D4
+3.1+4=G4                            jumps to bar 3, resets cursor
+A4                                  continues from bar 3 beat 2
 
-# Comment
+# Comment strips rest of line including any following commas
+1.1+4=C4, D4   # these two notes are inserted, rest of line is ignored
+E4, F4
+
+# This line is fully ignored
 # this line is ignored
 ```
 
@@ -443,14 +423,15 @@ If a line contains a mistake, a red error message appears below the text box and
 
 ## Notes and Limitations
 
-- **Bar and step numbers are 1-based.** Bar 1 Step 1 is the very first 1/16th note of the clip. Steps run 1–16 per bar.
-- **Continuation cursor starts at step 0** (bar 1, step 1) at the beginning of each Insert operation.
-- **Blank lines and comment-only lines** do not advance the cursor — they are skipped entirely.
-- **An explicit `Start.Step`** always overrides the cursor and sets it to `Start.Step + duration` for subsequent continuation lines.
-- **Duration must be at least 1 step.** Zero-duration notes are not allowed.
-- **Automation values are 0–100%** and are clamped to that range.
-- **Inserting is always additive.** Existing notes are never removed; Insert appends to whatever is already in the clip.
-- **The formula text is saved** between opens of the Generator dialog, so you can refine and re-insert without retyping.
-- **Chord `+` vs duration `+`** — `+` before `=` is always a duration separator; `+` after `=` is always a chord separator. They cannot be confused.
+- **Commas and newlines are equivalent** separators — use whichever is clearest.
+- **`#` comments** strip the rest of the line, including any comma-separated tokens that follow on the same line.
+- **Bar and step numbers are 1-based.** Steps run 1–16 per bar.
+- **Continuation cursor starts at step 0** at the beginning of each Insert operation.
+- **Blank lines and comment-only lines** do not advance the cursor.
+- **An explicit `Start.Step`** always overrides the cursor.
+- **Bare notes** reuse the last step count set by any `+N`, `start+N`, or `start-end` token. A bare note before any such token causes an error.
+- **Inserting replaces** existing notes that overlap the placed range. Notes outside the range are untouched.
+- **The formula text is saved** between opens of the Generator dialog.
+- **Chord `+` vs duration `+`** — `+` before `=` is always a duration separator; `+` after `=` is always a chord separator.
 - **Flat accidentals** must be written as lowercase `b` (e.g. `Bb3`, `Eb4`). Uppercase `B` is always the note B.
 - **Octave convention:** C4 = MIDI 60 (middle C). C3 = MIDI 48, C5 = MIDI 72.
