@@ -10,6 +10,8 @@ Notes are always **appended** to the clip; existing notes are not replaced. Use 
 
 Generates chord blocks, arpeggios, or both together, built from a harmonic progression you assemble with the chord palette.
 
+> See **[ChordArpGenerator.md](ChordArpGenerator.md)** for the complete reference.
+
 ### Controls
 
 | Control | Description |
