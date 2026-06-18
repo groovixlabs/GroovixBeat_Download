@@ -150,6 +150,9 @@ During a drag, a **CLEAR** trash zone appears above the mixer. Drop the clip ont
 | **Sampled Instrument** | Multi-sample instrument player. Select via Track Properties VST selector. |
 | **Drum Kit** | MIDI-triggered drum kit. Each pitch maps to a different drum sound. Use the Piano Roll to program patterns. |
 
+
+More Details on setup [DrumKitSetup.md]
+
 ---
 
 ### 3f. Track Properties Dialog
@@ -300,9 +303,9 @@ Drums: 1-8=Intro, 8=Verse, 16=Chorus, 8=Outro
 
 If any track or scene name cannot be resolved, a red error message appears inside the dialog and nothing is placed until all lines are valid.
 
-> See **[docs/ArrangementFormula.md](ArrangementFormula.md)** for the full syntax reference, token formats, naming shortcuts, and complete examples.
+> See **[ArrangementFormula.md](ArrangementFormula.md)** for the full syntax reference, token formats, naming shortcuts, and complete examples.
 
-> See **[docs/ArrangementView.md](ArrangementView.md)** for the complete Arrangement View & Live Performance reference — all toolbar buttons, edit and select modes, section markers, clip placement, zoom controls, keyboard shortcuts, and tips.
+> See **[ArrangementView.md](ArrangementView.md)** for the complete Arrangement View & Live Performance reference — all toolbar buttons, edit and select modes, section markers, clip placement, zoom controls, keyboard shortcuts, and tips.
 
 ---
 
@@ -383,7 +386,7 @@ Modulation:1-32=0>80
 Filter Sweep:1-16=100>20
 ```
 
-> See **[docs/AutomationFormula.md](AutomationFormula.md)** for the full syntax reference including ramps, named parameters, renamed labels, and multiple parameters at once.
+> See **[AutomationFormula.md](AutomationFormula.md)** for the full syntax reference including ramps, named parameters, renamed labels, and multiple parameters at once.
 
 ---
 
@@ -402,7 +405,7 @@ The **Remap C Major to target scale** option in Track Properties transposes inco
 | Left | Track type and loaded VST instrument name (dim text) |
 | Right | Hint text for the button or dropdown under the mouse (gold) |
 
-> See **[docs/ClipEditor.md](ClipEditor.md)** for the complete Piano Roll / Clip Editor reference — all toolbar buttons, note editing, automation lane, scale filter, drum kit mode, sampled instrument mode, keyboard shortcuts, and tips.
+> See **[ClipEditor.md](ClipEditor.md)** for the complete Piano Roll / Clip Editor reference — all toolbar buttons, note editing, automation lane, scale filter, drum kit mode, sampled instrument mode, keyboard shortcuts, and tips.
 
 ---
 
@@ -497,6 +500,8 @@ Click **Stretch to project BPM** to time-stretch the audio to the project tempo.
 
 Click the **Generate** button in the Piano Roll toolbar to open the Note Generator. It has four tabs:
 
+> See **[NoteGenerator.md](NoteGenerator.md)** for the complete Note Generator reference covering all four tabs — Chord / Arp, Drum Patterns, Bass Lines, and Formula.
+
 ---
 
 ### 7a. Chord / Arp Tab
@@ -519,6 +524,8 @@ Build chord progressions and arpeggios from a palette of scale degrees.
 Click the Roman numeral buttons (I – VII) to append scale degrees to your progression. Each click adds one chord to the sequence strip. Click the **×** on any chip in the strip to remove it. Click **Clear** to reset the sequence.
 
 Click **Insert into Clip** to write the generated notes to the current clip.
+
+> See **[ChordArpGenerator.md](ChordArpGenerator.md)** for the complete Chord / Arp Generator reference — chord types, voicings, arpeggio patterns, the scale-degree palette, and worked examples.
 
 ---
 
@@ -577,7 +584,7 @@ Start.Step-End.Step=Note [param=value ...]
 
 If a line contains an error, a red message appears below the text box and nothing is inserted until all lines are valid.
 
-> See **[docs/NoteFormula.md](NoteFormula.md)** for the full syntax reference including bar/step notation, all parameter names, chord syntax, and complete examples.
+> See **[NoteFormula.md](NoteFormula.md)** for the full syntax reference including bar/step notation, all parameter names, chord syntax, and complete examples.
 
 ---
 
@@ -586,6 +593,10 @@ If a line contains an error, a red message appears below the text box and nothin
 Right-click a track header and choose **FX Chain** to open the FX Chain Editor.
 
 Add VST3 effect plugins (compressors, reverbs, EQs, etc.) in series for that track. The signal flows through each plugin in order before reaching the master output. Each plugin slot shows the plugin name and a bypass toggle. Drag slots to reorder the chain.
+
+> See **[InternalFx.md](InternalFx.md)** for the complete reference on GrooviXBeat's built-in internal effects — parameters, routing, and usage.
+
+> See **[SideChain.md](SideChain.md)** for how to set up sidechain routing (e.g. ducking a pad with the kick).
 
 ---
 
@@ -674,10 +685,13 @@ When you drop or load audio files, GrooviXBeat copies them into the project's sa
 
 | Topic | Document |
 |-------|----------|
-| Live Performance & Arrangement View (full reference) | [docs/ArrangementView.md](ArrangementView.md) |
-| Piano Roll / Clip Editor (full reference) | [docs/ClipEditor.md](ClipEditor.md) |
-| Sample Editor (full reference) | [docs/SampleEditor.md](SampleEditor.md) |
-| Automation Formula syntax | [docs/AutomationFormula.md](AutomationFormula.md) |
-| Note Formula syntax (Generator) | [docs/NoteFormula.md](NoteFormula.md) |
-| Arrangement Wizard formula syntax | [docs/ArrangementFormula.md](ArrangementFormula.md) |
-| Sidechain setup | [docs/SideChain.md](SideChain.md) |
+| Live Performance & Arrangement View (full reference) | [ArrangementView.md](ArrangementView.md) |
+| Piano Roll / Clip Editor (full reference) | [ClipEditor.md](ClipEditor.md) |
+| Sample Editor (full reference) | [SampleEditor.md](SampleEditor.md) |
+| Internal FX plugins (full reference) | [InternalFx.md](InternalFx.md) |
+| Sidechain setup | [SideChain.md](SideChain.md) |
+| Note Generator (full reference) | [NoteGenerator.md](NoteGenerator.md) |
+| Chord / Arp Generator (full reference) | [ChordArpGenerator.md](ChordArpGenerator.md) |
+| Note Formula syntax (Generator) | [NoteFormula.md](NoteFormula.md) |
+| Arrangement Wizard formula syntax | [ArrangementFormula.md](ArrangementFormula.md) |
+| Automation Formula syntax | [AutomationFormula.md](AutomationFormula.md) |
