@@ -151,7 +151,9 @@ During a drag, a **CLEAR** trash zone appears above the mixer. Drop the clip ont
 | **Drum Kit** | MIDI-triggered drum kit. Each pitch maps to a different drum sound. Use the Piano Roll to program patterns. |
 
 
-More Details on setup [DrumKitSetup.md]
+> See **[DrumKitSetup.md](DrumKitSetup.md)** for the steps to setup and use drumkit
+samples from https://github.com/geikha/tidal-drum-machines.
+
 
 ---
 
